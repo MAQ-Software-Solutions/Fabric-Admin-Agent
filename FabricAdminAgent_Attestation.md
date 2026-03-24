@@ -1,4 +1,4 @@
-# Fabric Extensibility toolkit vendor attestation template - Microsoft Fabric | Microsoft Learn
+# Publish Workload Requirements Attestation Checklist
 
 ## Executive Summary
 
@@ -74,8 +74,9 @@ The following sections documents details, exceptions, or variances regarding the
 | Name | Value |
 | --- | --- |
 | Workload Version | 1.1.1 |
-| workloadName | Fabric Admin Agent |
+| Workload Name | Fabric Admin Agent |
 | Release Date | 03/24/2025 |
+| {{workloadName}} | {{MAQSoftware.FabricAdminAgent}} |
 
 #### Business Requirements
 
