@@ -72,6 +72,7 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
     <tr><td>FabricAdminAgent_InitializeTables</td><td>Notebook</td><td>One-time: creates all KQL tables, MVs, and SQL schema</td></tr>
     <tr><td>FabricAdminAgent_ConfigVariables</td><td>Notebook</td><td>Returns KQL URI; called by all other notebooks at startup</td></tr>
     <tr><td>FabricAdminAgent_Utils</td><td>Notebook</td><td>Shared utility functions (logging, token helpers, etc.)</td></tr>
+    <tr><td>FabricAdminAgentEnvironment</td><td>Environment</td><td>Shared Environment for Notebooks</td></tr>
     <tr><td>FabricAdminAgent_AgentAction</td><td>Notebook</td><td>Allows Agent to automatically take recommended action and send email notifications</td></tr>
     <tr><td>FabricAdminAgent_SustainedLoadDetection</td><td>Notebook</td><td>Detects Sustained Load findings on onboarded capacities</td></tr>
     <tr><td>FabricAdminAgent_SpikeDetection</td><td>Notebook</td><td>Detects Spike Detection findings on onboarded capacities</td></tr>
@@ -89,7 +90,7 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
     <tr><td>FabricAdminAgent_Workspaces</td><td>Notebook</td><td>Gathers workspaces in capacities; executed in FetchWorkspacesPipeline</td></tr>
     <tr><td>FabricAdminAgent_CapacityMetricsModel</td><td>Semantic Model</td><td>Semantic Model for CapacityMetricsInsights report</td></tr>
     <tr><td>FabricAdminAgent_CapacityEventsModel</td><td>Semantic Model</td><td>Semantic Model for CapacityEventsInsights report</td></tr>
-    <tr><td>FabricAdminAgentKeyVault</td><td>Azure Key Vault</td><td>Stores secrets (ClientId, ClientSecret, TenantId, EmailId, EmailPassword)</td></tr>
+    <tr><td>adminagentvault</td><td>Azure Key Vault</td><td>Stores secrets (ClientId, ClientSecret, TenantId)</td></tr>
     <tr><td>FabricAdminAgentAutomation</td><td>Azure Automation</td><td>Used for creating schedules for capacity turn on/off</td></tr>
     <tr><td>FabricAdminAgentRunbook</td><td>Azure Runbook</td><td>Used for creating schedules for capacity turn on/off</td></tr>
   </tbody>
@@ -128,9 +129,8 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
     <tr><th>Resource</th><th>Configuration</th><th>Purpose</th></tr>
   </thead>
   <tbody>
-    <tr><td>Azure Key Vault</td><td>User must have Key Vault Administrator role</td><td>Stores ClientId, ClientSecret, TenantId, EmailId, EmailPassword</td></tr>
-    <tr><td>Service Principal (App)</td><td>Client Credentials grant; assigned SQL db_owner or db_datawriter</td><td>Used by all notebooks for SQL auth and Key Vault access via mssparkutils</td></tr>
-    <tr><td>SMTP Email Account</td><td>Credentials stored in Key Vault</td><td>Sends notifications on finding detection and action taken</td></tr>
+    <tr><td>Azure Key Vault</td><td>User must have Key Vault Administrator role</td><td>Stores ClientId, ClientSecret, TenantId</td></tr>
+    <tr><td>Service Principal (App)</td><td>Workspace Admin/Member role; Client Credentials grant; assigned SQL db_owner or db_datawriter</td><td>Used by all notebooks for SQL auth, operations and Key Vault access via mssparkutils</td></tr>
   </tbody>
 </table>
 
@@ -261,7 +261,7 @@ USING (VALUES
     ('automation', 'RunbookName',       <<automation_runbook_name>>),
 
     -- KeyVault
-    ('KeyVault', 'KeyVaultName', 'FabricAdminAgentKeyVault'),
+    ('KeyVault', 'KeyVaultName', 'adminagentvault'),
 
     -- Capacity Monitoring Agent
     ('capacityMonitoringAgentConfig', 'WorkspaceName', <<workspace_name>>),
@@ -395,8 +395,6 @@ In Azure Key Vault, create the following secrets:
     <tr><td><code>FabricAdminAgentClientId</code></td><td>Service Principal Application (Client) ID</td></tr>
     <tr><td><code>FabricAdminAgentClientSecret</code></td><td>Service Principal Client Secret</td></tr>
     <tr><td><code>TenantID</code></td><td>Azure Active Directory Tenant ID</td></tr>
-    <tr><td><code>FabricAdminAgentEmailId</code></td><td>SMTP sender email address</td></tr>
-    <tr><td><code>FabricAdminAgentEmailPassword</code></td><td>SMTP sender password</td></tr>
   </tbody>
 </table>
 
@@ -459,7 +457,7 @@ Runs only when AllowAgentAction = true is configured for a capacity. Automatical
 
 - Reads CapacitySettings to find capacities with AllowAgentAction = true
 - Filters FabricFindings for Status = Active and non-null FinalSKU for authorised (Capacity, FindingType) pairs
-- Backend handles: SKU upgrade, status update to Approved, SMTP email notification to configured recipients
+- Backend handles: SKU upgrade, status update to Approved, email notification to configured recipients
 - Latency depends on notebook scheduling frequency
 
 ### 4.4 Model Training Notebook — Schedule: Weekly / On Demand
@@ -544,12 +542,10 @@ Names of Azure Key Vault secrets (not the secret values themselves — notebooks
     <tr><th>ConfigKey</th><th>Example Value (Secret Name in KV)</th><th>Purpose</th></tr>
   </thead>
   <tbody>
-    <tr><td>KeyVaultName</td><td><code>&lt;&lt;name your keyvault&gt;&gt;</code></td><td>Key Vault where your secrets are stored</td></tr>
+    <tr><td>KeyVaultName</td><td><code>adminagentvault</code></td><td>Key Vault where your secrets are stored</td></tr>
     <tr><td>ClientId</td><td><code>FabricAdminAgentClientId</code></td><td>Name of secret holding the Service Principal App ID</td></tr>
     <tr><td>ClientSecret</td><td><code>FabricAdminAgentClientSecret</code></td><td>Name of secret holding the Service Principal password</td></tr>
-    <tr><td>TenantId</td><td><code>TenantId</code></td><td>Name of secret holding the AAD Tenant ID</td></tr>
-    <tr><td>EmailId</td><td><code>FabricAdminAgentEmailId</code></td><td>Name of secret holding the SMTP sender email</td></tr>
-    <tr><td>EmailPassword</td><td><code>FabricAdminAgentEmailPassword</code></td><td>Name of secret holding the SMTP password</td></tr>
+    <tr><td>TenantId</td><td><code>TenantID</code></td><td>Name of secret holding the AAD Tenant ID</td></tr>
   </tbody>
 </table>
 
@@ -635,9 +631,7 @@ After onboarding, confirm the following:
 - **Key Vault Secret Naming Convention:** The following Azure Key Vault secrets must be created using the specified naming convention:
   - FabricAdminAgentClientId
   - FabricAdminAgentClientSecret
-  - TenantId
-  - FabricAdminAgentEmailId
-  - FabricAdminAgentEmailPassword
+  - TenantID
 
 - **Service Principal Role:** The Service Principal should have **Contributor** role on the workspace where the Fabric Admin Agent workload is deployed.
 
