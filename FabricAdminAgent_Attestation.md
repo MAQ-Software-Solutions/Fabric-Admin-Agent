@@ -1,50 +1,3 @@
----
-layout: Conceptual
-title: Fabric Extensibility toolkit vendor attestation template - Microsoft Fabric | Microsoft Learn
-canonicalUrl: https://learn.microsoft.com/en-us/fabric/extensibility-toolkit/publishing-vendor-attestation-template
-breadcrumb_path: /fabric/breadcrumb/toc.json
-uhfHeaderId: MSDocsHeader-Fabric
-show_latex: false
-feedback_system: Standard
-feedback_help_link_url: https://community.fabric.microsoft.com/powerbi
-feedback_help_link_type: ask-the-community
-feedback_product_url: https://ideas.fabric.microsoft.com/
-ms.service: fabric
-author: billmath
-ms.author: billmath
-description: Template document for vendor attestation requirements when publishing to Microsoft Fabric Workload Hub.
-ms.reviewer: gesaur
-ms.topic: concept-article
-ms.date: 2025-12-15T00:00:00.0000000Z
-locale: en-us
-document_id: cb9769c3-65f6-0881-a4fb-ef09be0f4360
-document_version_independent_id: cb9769c3-65f6-0881-a4fb-ef09be0f4360
-updated_at: 2026-02-17T06:08:00.0000000Z
-original_content_git_url: https://github.com/MicrosoftDocs/fabric-docs-pr/blob/live/docs/extensibility-toolkit/publishing-vendor-attestation-template.md
-gitcommit: https://github.com/MicrosoftDocs/fabric-docs-pr/blob/5156dc524b5f03f820d4d6b55aa69caeded0cce5/docs/extensibility-toolkit/publishing-vendor-attestation-template.md
-git_commit_id: 5156dc524b5f03f820d4d6b55aa69caeded0cce5
-site_name: Docs
-depot_name: MSDN.fabric-docs
-page_type: conceptual
-toc_rel: toc.json
-pdf_url_template: https://learn.microsoft.com/pdfstore/en-us/MSDN.fabric-docs/{branchName}{pdfName}
-word_count: 2469
-asset_id: extensibility-toolkit/publishing-vendor-attestation-template
-moniker_range_name: 
-monikers: []
-item_type: Content
-source_path: docs/extensibility-toolkit/publishing-vendor-attestation-template.md
-cmProducts:
-- https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/e7cd09c2-9e9a-4f0d-b160-c15783f45b1f
-- https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/57eae307-c3a1-4cac-b645-1a899934bac8
-- https://authoring-docs-microsoft.poolparty.biz/devrel/07bb3e10-d135-43ff-bc8b-360497cb39fa
-spProducts:
-- https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/1d337399-0ca4-4b4c-acef-8df37820e018
-- https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/ee561821-1ac7-45a8-9409-6ba5eb7a5b97
-- https://authoring-docs-microsoft.poolparty.biz/devrel/12e559b9-eaf6-4aee-9af7-62334e15f863
-platformId: 05337d56-8181-7436-ae0f-b3bc39e344fd
----
-
 # Fabric Extensibility toolkit vendor attestation template - Microsoft Fabric | Microsoft Learn
 
 ## Executive Summary
@@ -120,9 +73,9 @@ The following sections documents details, exceptions, or variances regarding the
 
 | Name | Value |
 | --- | --- |
-| Workload Version: | 1.0.0 |
-| Workload Name: | Fabric Admin Agent |
-| Release Date: | 03/16/2025 |
+| Workload Version | 1.1.1 |
+| workloadName | Fabric Admin Agent |
+| Release Date | 03/24/2025 |
 
 #### Business Requirements
 
