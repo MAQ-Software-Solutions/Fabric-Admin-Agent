@@ -77,6 +77,7 @@ The following sections documents details, exceptions, or variances regarding the
 | Workload Name | Fabric Admin Agent |
 | Release Date | 03/24/2025 |
 | {{workloadName}} | {{MAQSoftware.FabricAdminAgent}} |
+| Product | MAQSoftware.FabricAdminAgent.Product |
 
 #### Business Requirements
 
