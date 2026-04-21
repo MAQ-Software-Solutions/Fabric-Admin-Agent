@@ -304,6 +304,7 @@ GO
 ![Azure Deployment](images/deployazureresourcesstart.png)
 
 > This will deploy a azure automation account, a runbook and a Keyvault with the names added in the above SQL query executed in the SQL DB.
+> If the Azure Resource Deployment fails, please verify the quota for Automation Account, Key Vault and Runbook for the subscription
 
 ![Azure Deployment](images/deployedazureresources.png)
 
