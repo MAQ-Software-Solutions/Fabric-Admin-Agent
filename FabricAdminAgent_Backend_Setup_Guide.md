@@ -201,6 +201,8 @@ Perform all steps below once per environment deployment. Each step is a dependen
 - Workspace Name
 - Semantic Model Name
 
+**12.** Set the refresh schedule for the semantic model as per requirements:
+
 ---
 
 ### Step 2: Create a Fabric Admin Agent Artifact
@@ -251,39 +253,27 @@ BEGIN
     );
 END;
 GO
-
+ 
 MERGE dbo.FabricAdminAgentConfig AS target
 USING (VALUES
     -- Automation
-    ('automation', 'SubscriptionId',    <<automation_subscriptionID>>),
-    ('automation', 'ResourceGroupName', <<automation_resourceGroupName>>),
-    ('automation', 'AccountName',       <<automation_acount_name>>),
-    ('automation', 'RunbookName',       <<automation_runbook_name>>),
-
-    -- KeyVault
-    ('KeyVault', 'KeyVaultName', 'adminagentvault'),
-
+    ('automation', 'SubscriptionId',    <<azure_subscription_id>>),
+    ('automation', 'ResourceGroupName', <<azure_resource_group_name>>),
+ 
     -- Capacity Monitoring Agent
     ('capacityMonitoringAgentConfig', 'WorkspaceName', <<workspace_name>>),
-    ('capacityMonitoringAgentConfig', 'ReportName',    'FabricAdminAgent_CapacityMetricsInsights'),
-    ('capacityMonitoringAgentConfig', 'PageName',      'CapacityMetricsInsights'),
-    ('capacityMonitoringAgentConfig', 'TableName',     'capacities'),
-    ('capacityMonitoringAgentConfig', 'ColumnName',    'displayName'),
-
+ 
     -- Capacity SKU Monitoring
-    ('capacitySkuMonitoringConfig', 'WorkspaceName', <<workspace_name>>),
-    ('capacitySkuMonitoringConfig', 'ReportName',    'FabricAdminAgent_CapacityEventsInsights'),
-    ('capacitySkuMonitoringConfig', 'PageName',      'CU Percentage Trend'),
-    ('capacitySkuMonitoringConfig', 'TableName',     'CapacityUtilization'),
-    ('capacitySkuMonitoringConfig', 'ColumnName',    'CapacityName')
-
+    ('capacitySkuMonitoringConfig', 'WorkspaceName', <<workspace_name>>)
+ 
+ 
 ) AS source (ConfigType, ConfigName, ConfigValue)
 ON  target.ConfigType = source.ConfigType
 AND target.ConfigName = source.ConfigName
-
+ 
 WHEN MATCHED THEN
     UPDATE SET ConfigValue = source.ConfigValue
-
+ 
 WHEN NOT MATCHED THEN
     INSERT (ConfigType, ConfigName, ConfigValue)
     VALUES (source.ConfigType, source.ConfigName, source.ConfigValue);
@@ -328,8 +318,8 @@ GO
 **1.** Navigate to Settings in the top right --> Manage connections and gateways
 
 **2.** Find the below three connections created - 
-  * fabricadminagent-pbi-service-admin
-  * fabricadminagent-kql-connection-<<current_workspace_GUID>>
+  * fabricadminagent-pbi-service-admin_<<identifier>>
+  * fabricadminagent-kql-connection-<<<identifier>>>
   * A connection with the query URI of the KQL DB deployed
 
 **3.** Setup the Authorization for all the 3 connections to be OAuth2 and Edit the credentials --> A Microsoft login popup comes in --> sign in with your account --> Click Save
@@ -385,7 +375,7 @@ For each capacity to be onboarded to the Fabric Admin Agent:
 
 ### Step 8: Configure Azure Key Vault
 
-In Azure Key Vault, create the following secrets:
+In Azure Key Vault deployed with the name adminagentvault_<identifier>, create the following secrets:
 
 <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
   <thead>
