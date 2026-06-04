@@ -22,12 +22,8 @@
 1. [Overview & Goal](#1-overview--goal)
 2. [Prerequisites & Role Requirements](#2-prerequisites--role-requirements)
 3. [One-Time Infrastructure Setup](#3-one-time-infrastructure-setup)
-4. [Notebook Scheduling](#4-notebook-scheduling)
-5. [Pipeline Scheduling](#5-pipeline-scheduling)
-6. [KQL ConfigTable — Full Reference](#6-kql-configtable--full-reference)
-7. [Onboarding a New Capacity](#7-onboarding-a-new-capacity)
-8. [Disclaimer](#8-disclaimer)
-9. [Common Issues & Troubleshooting](#9-common-issues--troubleshooting)
+4. [Onboarding a New Capacity](#4-onboarding-a-new-capacity)
+5. [Disclaimer](#5-disclaimer)
 
 ---
 
@@ -46,10 +42,10 @@ The backend is composed of four layers that work together in a continuous pipeli
     <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
   </thead>
   <tbody>
-    <tr><td>Real-time Ingestion</td><td>Eventstream → Eventhouse (KQL DB)</td><td>Streams live Capacity Overview Events every 30 sec</td></tr>
+    <tr><td>Real-time Ingestion</td><td>Eventstream → Eventhouse (KQL DB)</td><td>Streams live Capacity Overview Events every 30 sec; one Eventstream is created per capacity onboarded to the Fabric Admin Agent workload</td></tr>
     <tr><td>Historical Staging</td><td>Pipeline → Lakehouse (Delta tables)</td><td>Pulls item-level metrics from Capacity Metrics App</td></tr>
-    <tr><td>Detection &amp; Analytics</td><td>PySpark Notebooks (scheduled)</td><td>Runs all detection logic, predictions, aggregates findings</td></tr>
-    <tr><td>Operational Metadata</td><td>SQL Database (FabricAdminAgentDB)</td><td>Stores findings, settings, capacities, audit logs</td></tr>
+    <tr><td>Detection &amp; Analytics</td><td>KQL (Kusto Query Language)</td><td>Runs all detection logic in real-time as Capacity Overview Events are streamed; surfaces findings instantly via KQL queries</td></tr>
+    <tr><td>Operational Metadata</td><td>KQL Database (FabricAdminAgentLogs)</td><td>Stores findings, settings, capacities, and audit logs in the KQL Eventhouse DB</td></tr>
   </tbody>
 </table>
 
@@ -62,37 +58,23 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
     <tr><th>Artifact Name</th><th>Type</th><th>Role</th></tr>
   </thead>
   <tbody>
-    <tr><td>capacity_utilization_eventstream</td><td>Eventstream</td><td>Source: Capacity Overview Events → KQL DB</td></tr>
-    <tr><td>FabricAdminAgentLogs</td><td>KQL Eventhouse DB</td><td>Stores FabricCapacityEvents, CapacityUtilization, ConfigTable, MVs</td></tr>
-    <tr><td>FabricAdminAgent</td><td>Lakehouse</td><td>Delta tables: alert staging, model artifacts, predictions</td></tr>
-    <tr><td>LoadDataCapacityMetrics</td><td>Data Pipeline</td><td>Pulls item-level data from Capacity Metrics App</td></tr>
-    <tr><td>FabricAdminAgentDB</td><td>SQL Database</td><td>dbo.FabricFindings, Capacities, CapacitySettings, SettingTypes</td></tr>
-    <tr><td>FabricAdminAgent_CapacityEventsInsights</td><td>Power BI Report</td><td>Embedded visual: CU utilization line chart based on capacity events</td></tr>
-    <tr><td>FabricAdminAgent_CapacityMetricsInsights</td><td>Power BI Report</td><td>Embedded visual: workspace/item/operation metrics</td></tr>
-    <tr><td>FabricAdminAgent_InitializeTables</td><td>Notebook</td><td>One-time: creates all KQL tables, MVs, and SQL schema</td></tr>
-    <tr><td>FabricAdminAgent_ConfigVariables</td><td>Notebook</td><td>Returns KQL URI; called by all other notebooks at startup</td></tr>
-    <tr><td>FabricAdminAgent_Utils</td><td>Notebook</td><td>Shared utility functions (logging, token helpers, etc.)</td></tr>
-    <tr><td>FabricAdminAgentEnvironment</td><td>Environment</td><td>Shared Environment for Notebooks</td></tr>
-    <tr><td>FabricAdminAgent_AgentAction</td><td>Notebook</td><td>Allows Agent to automatically take recommended action and send email notifications</td></tr>
-    <tr><td>FabricAdminAgent_SustainedLoadDetection</td><td>Notebook</td><td>Detects Sustained Load findings on onboarded capacities</td></tr>
-    <tr><td>FabricAdminAgent_SpikeDetection</td><td>Notebook</td><td>Detects Spike Detection findings on onboarded capacities</td></tr>
-    <tr><td>FabricAdminAgent_DetectCUTrend</td><td>Notebook</td><td>Detects CU Trending Upwards on onboarded capacities</td></tr>
-    <tr><td>FabricAdminAgent_ModelTrainingForShortTermCUPredictions</td><td>Notebook</td><td>Trains models on user data based on capacity events</td></tr>
-    <tr><td>FabricAdminAgent_InferenceShortTermCUPredictions</td><td>Notebook</td><td>Predicts CU utilization percentage based on capacity events</td></tr>
-    <tr><td>FabricAdminAgent_FabricFindings</td><td>Notebook</td><td>Stores all findings generated after the last pipeline run</td></tr>
-    <tr><td>FabricAdminAgent_AverageUtilization</td><td>Notebook</td><td>Calculates Avg CU utilization for last 14 days per capacity</td></tr>
-    <tr><td>FabricAdminAgent_Dates</td><td>Notebook</td><td>Creates Date table</td></tr>
+    <tr><td>FabricAdminAgent</td><td>Lakehouse</td><td>Delta tables: usage metrics</td></tr>
     <tr><td>FabricAdminAgent_AggregatedMetrics</td><td>Notebook</td><td>Creates day/week/month/quarter/year level CU metrics at workspace and item level</td></tr>
-    <tr><td>FabricAdminAgent_ItemOperationMetrics</td><td>Notebook</td><td>Gathers item operation level data from Capacity Metrics App</td></tr>
+    <tr><td>FabricAdminAgent_Capacities</td><td>Notebook</td><td>Gathers capacities in the tenant; executed in FetchCapacitiesPipeline</td></tr>
+    <tr><td>FabricAdminAgent_CapacityMonitoringAgentDataset</td><td>Semantic Model</td><td>Semantic Model for CapacityMonitoringAgentReport</td></tr>
+    <tr><td>FabricAdminAgent_CapacityMonitoringAgentReport</td><td>Report</td><td>Embedded visual: capacity monitoring metrics</td></tr>
+    <tr><td>FabricAdminAgent_ConfigNotebook</td><td>Notebook</td><td>Returns KQL URI; called by all other notebooks at startup</td></tr>
+    <tr><td>FabricAdminAgent_Dates</td><td>Notebook</td><td>Creates Date table</td></tr>
     <tr><td>FabricAdminAgent_FetchCapacitiesPipeline</td><td>Pipeline</td><td>Gathers data of capacities present in the tenant</td></tr>
     <tr><td>FabricAdminAgent_FetchWorkspacesPipeline</td><td>Pipeline</td><td>Gathers workspace data within capacities in the tenant</td></tr>
-    <tr><td>FabricAdminAgent_Capacities</td><td>Notebook</td><td>Gathers capacities in the tenant; executed in FetchCapacitiesPipeline</td></tr>
+    <tr><td>FabricAdminAgent_InitializeTables</td><td>Notebook</td><td>One-time: creates all KQL tables in the KLQ Database</td></tr>
+    <tr><td>FabricAdminAgent_ItemOperationMetrics</td><td>Notebook</td><td>Gathers item operation level data from Capacity Metrics App</td></tr>
+    <tr><td>FabricAdminAgent_Items</td><td>Notebook</td><td>Gathers items data in capacities</td></tr>
+    <tr><td>FabricAdminAgent_LoadCapacityMetricsData</td><td>Pipeline</td><td>Pulls item-level data from Capacity Metrics App</td></tr>
+    <tr><td>FabricAdminAgent_LoggingUtility</td><td>Notebook</td><td>Shared utility functions (logging, token helpers, etc.)</td></tr>
     <tr><td>FabricAdminAgent_Workspaces</td><td>Notebook</td><td>Gathers workspaces in capacities; executed in FetchWorkspacesPipeline</td></tr>
-    <tr><td>FabricAdminAgent_CapacityMetricsModel</td><td>Semantic Model</td><td>Semantic Model for CapacityMetricsInsights report</td></tr>
-    <tr><td>FabricAdminAgent_CapacityEventsModel</td><td>Semantic Model</td><td>Semantic Model for CapacityEventsInsights report</td></tr>
-    <tr><td>adminagentvault</td><td>Azure Key Vault</td><td>Stores secrets (ClientId, ClientSecret, TenantId)</td></tr>
-    <tr><td>FabricAdminAgentAutomation</td><td>Azure Automation</td><td>Used for creating schedules for capacity turn on/off</td></tr>
-    <tr><td>FabricAdminAgentRunbook</td><td>Azure Runbook</td><td>Used for creating schedules for capacity turn on/off</td></tr>
+    <tr><td>FabricAdminAgentLogs</td><td>Eventhouse</td><td>Eventhouse for storing live capacity events</td></tr>
+    <tr><td>FabricAdminAgentLogs</td><td>KQL Database</td><td>Stores FabricCapacityEvents, CapacityUtilization, ConfigTable, MVs</td></tr>
   </tbody>
 </table>
 
@@ -110,14 +92,24 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
   </thead>
   <tbody>
     <tr>
-      <td>Capacity Administrator</td>
-      <td>Microsoft Fabric (tenant level)</td>
-      <td>Required to read Capacity Overview Events via Eventstream; must be assigned for every capacity being monitored</td>
+      <td>Contributor (minimum)</td>
+      <td>Fabric Workspace (Admin Agent WS)</td>
+      <td>Required to create the Fabric Admin Agent workload item and deploy all Fabric artifacts</td>
     </tr>
     <tr>
-      <td>Workspace Member or Admin</td>
-      <td>Fabric Workspace (Admin Agent WS)</td>
-      <td>Needed to create and configure all Fabric artifacts (Eventstream, Eventhouse, Lakehouse, Notebooks, Pipelines, Reports); required for the pipeline to read historical capacity metrics from lakehouse tables</td>
+      <td>Capacity Administrator</td>
+      <td>Microsoft Fabric (per capacity)</td>
+      <td>Required to read Capacity Overview Events via Eventstream and to add capacities in the workload Configuration tab; must be assigned for every capacity being monitored</td>
+    </tr>
+    <tr>
+      <td>Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator</td>
+      <td>Microsoft Entra ID (tenant level)</td>
+      <td>Required to grant admin consent for the Backend Service Principal during initial workload setup (Step 4)</td>
+    </tr>
+    <tr>
+      <td>Fabric Administrator or Global Administrator (with Tenant.Read.All or Tenant.ReadWrite.All)</td>
+      <td>Microsoft Fabric / Power BI</td>
+      <td>Required to authorize the PBI Service connection in Manage Connections and Gateways (Step 15)</td>
     </tr>
   </tbody>
 </table>
@@ -131,6 +123,7 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
   <tbody>
     <tr><td>Azure Key Vault</td><td>User must have Key Vault Administrator role</td><td>Stores ClientId, ClientSecret, TenantId</td></tr>
     <tr><td>Service Principal (App)</td><td>Workspace Admin/Member role; Client Credentials grant; assigned SQL db_owner or db_datawriter</td><td>Used by all notebooks for SQL auth, operations and Key Vault access via mssparkutils</td></tr>
+    <tr><td>Fabric Capacity (Azure resource)</td><td>Contributor role on the Fabric Capacity resource in Azure</td><td>Scale up, scale down, pause and resume the capacity</td></tr>
   </tbody>
 </table>
 
@@ -152,413 +145,380 @@ Without this role:
 
 Perform all steps below once per environment deployment. Each step is a dependency for the next.
 
-### Step 1: Setup the Microsoft Fabric Capacity Metrics App
-
-> Skip this step if you have already set up the Capacity Metrics App.
-
-**1.** Navigate to the **Apps Section** on Power BI.
-
-![Homepage](images/homepage.png)
-
-**2.** Click on the **Get Apps** button.
-
-![Apps](images/apps.png)
-
-**3.** Search for **Microsoft Fabric Capacity Metrics** in the search menu.
-
-![Capacity Metrics](images/capacitymetrics.png)
-
-**4.** Click **Get it Now**.
-
-![Get Capacity Metrics](images/getcapacitymetrics.png)
-
-**5.** Click **Install**.
-
-![Installation](images/installation.png)
-
-**6.** A new app is added named "Microsoft Fabric Capacity Metrics <<current_timestamp>>".
-
-![App Added](images/appadded.png)
-
-**7.** Click on the row to navigate to the new Report, then click **Connect**.
-
-![Connecting Report](images/connectingreport.png)
-
-**8.** Set the **Offset** for the time according to the region Timestamp (e.g., for Indian Standard Time: +5.5).
-
-![Connect Metrics App](images/connectmetricsapp.png)
-
-**9.** Sign in and Connect.
-
-![Authorization Metrics App](images/authorizationmetricsapp.png)
-
-**10.** Report is now set up successfully.
-
-![Health Page](images/healthpage.png)
-
-**11.** Note down the following details for the Microsoft Fabric Capacity Metrics App:
-
-- Workspace Name
-- Semantic Model Name
-
-**12.** Set the refresh schedule for the semantic model as per requirements:
+> **Prerequisite — Microsoft Fabric Capacity Metrics App:** Before starting, ensure the Capacity Metrics App is installed and its semantic model is refreshing. Note down the **Workspace Name** and **Semantic Model Name** — these are required in Step 19.
 
 ---
 
-### Step 2: Create a Fabric Admin Agent Artifact
+### Step 1: Verify Workspace Access
 
-**1.** Click on the **New Item** button on the Fabric Portal.
+Ensure the user performing the setup has at least **Contributor** role on the Fabric workspace where the Fabric Admin Agent will be deployed.
 
-![FAA Artifact](images/faaartifact.png)
-
-**2.** Search for **Fabric Admin Agent** and click on the tab.
-
-![Creating FAA](images/creatingfaa.png)
-
-**3.** Enter the name of the artifact.
-
-![Rename Artifact](images/renameartifact.png)
-
-The artifact is created in its initial state.
-
-![Initial State](images/intialstate.png)
+![Homepage](images_v2/workspaceaccess.png)
 
 ---
 
-### Step 3: Deploy the Required Fabric and Azure Artifacts
+### Step 2: Create the Fabric Admin Agent Workload Item
 
-**1.** Click the **Deploy Fabric Resources** button.
+**1.** In the Fabric workspace, click the **New Item** button.
 
-![Deploy Artifact](images/intialstate.png)
+![NewItem](images_v2/newitem.png)
 
-**2.** Deployment starts *(this step might take a few minutes)* Wait untill the Fabric resources are deployed.
+**2.** Search for **Fabric Admin Agent** and click on it.
 
-![Deployment Initiation](images/fabricartifactsdeployed.jpg)
+![Search](images_v2/searchFaa.png)
 
-> This step deploys the required Fabric and also creates connection objects to refresh semantic models with the KQL DB.
+**3.** Enter a name for the artifact and confirm creation.
 
-**3.** Search for the Fabric SQL DB named **FabricAdminAgentDB** deployed in the current workspace.
+![Create](images_v2/createitemdialoguebox.png)
 
-**4.** Create a new Script, and execute the below script in the SQL DB
+The item is created in its initial state.
 
-```
-IF OBJECT_ID('dbo.FabricAdminAgentConfig', 'U') IS NULL
-BEGIN
-    CREATE TABLE dbo.FabricAdminAgentConfig
-    (
-        ConfigType  NVARCHAR(100) NOT NULL,
-        ConfigName  NVARCHAR(100) NOT NULL,
-        ConfigValue NVARCHAR(MAX) NOT NULL,
-        CONSTRAINT PK_FabricAdminAgentConfig PRIMARY KEY (ConfigType, ConfigName)
-    );
-END;
-GO
- 
-MERGE dbo.FabricAdminAgentConfig AS target
-USING (VALUES
-    -- Automation
-    ('automation', 'SubscriptionId',    <<azure_subscription_id>>),
-    ('automation', 'ResourceGroupName', <<azure_resource_group_name>>),
- 
-    -- Capacity Monitoring Agent
-    ('capacityMonitoringAgentConfig', 'WorkspaceName', <<workspace_name>>),
- 
-    -- Capacity SKU Monitoring
-    ('capacitySkuMonitoringConfig', 'WorkspaceName', <<workspace_name>>)
- 
- 
-) AS source (ConfigType, ConfigName, ConfigValue)
-ON  target.ConfigType = source.ConfigType
-AND target.ConfigName = source.ConfigName
- 
-WHEN MATCHED THEN
-    UPDATE SET ConfigValue = source.ConfigValue
- 
-WHEN NOT MATCHED THEN
-    INSERT (ConfigType, ConfigName, ConfigValue)
-    VALUES (source.ConfigType, source.ConfigName, source.ConfigValue);
-GO
-```
+![Create](images_v2/initialstate.png)
 
-![Deployed Resources](images/runsqlquery.png)
+---
 
-**Placeholder values:**
+### Step 3: Approve Frontend Service Principal Permissions
+
+Upon creation, a popup appears requesting permissions for the **Frontend Service Principal (SPN)**. This is required for the workload UI to access Fabric APIs on behalf of the user.
+
+**1.** Review the requested permissions in the popup.
+
+![Create](images_v2/frontendadminapproval.png)
+
+**2.** Click **Request Approval** to submit the consent request.
+
+
+> **Note:** Approval must be granted by a user with one of the admin roles listed in Section 2.1 (Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator).
+
+---
+
+### Step 4: Authorize the Backend Application
+
+The Backend app registration requires admin consent and **must be performed by** a **Global Administrator**, **Privileged Role Administrator**, **Application Administrator**, or **Cloud Application Administrator**.
+
+**1.** The admin navigates to the Backend app authorization screen within the workload setup.
+
+![Create](images_v2/backendappconsent.png)
+
+**2.** The admin reviews and grants the requested API permissions.
+
+![Create](images_v2/initialstatebackendsignin.png)
+
+> **Important:** Both the Frontend SPN approval (Step 3) and Backend app authorization (Step 4) must be completed before proceeding to Step 5.
+
+---
+
+### Step 5: Deploy Fabric Resources
+
+Once both SPN approvals are complete:
+
+**1.** Click the **Deploy Fabric Resources** button in the workload item.
+
+![Create](images_v2/fabric_deploy.png)
+
+**2.** Wait for the deployment to complete. This process takes approximately **20–25 minutes**.
+
+![Create](images_v2/fabric_deployment_progress.png)
+
+**3.** Confirm all Fabric artifacts have been successfully deployed.
+
+![Create](images_v2/fabric_deployment_complete.png)
+
+---
+
+### Step 6: Deploy Azure Resources
+
+**1.** Click the **Deploy Azure Resources** button.
+
+![Create](images_v2/azure_deployment_button.png)
+
+**2.** Provide the following inputs when prompted:
 
 <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
   <thead>
-    <tr><th>Placeholder</th><th>Description</th></tr>
+    <tr><th>Parameter</th><th>Description</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>&lt;&lt;automation_subscriptionID&gt;&gt;</code></td><td>The Azure subscription ID where the automation account will be deployed</td></tr>
-    <tr><td><code>&lt;&lt;automation_resourceGroupName&gt;&gt;</code></td><td>The Azure resource group name where the automation account will be deployed</td></tr>
-    <tr><td><code>&lt;&lt;automation_acount_name&gt;&gt;</code></td><td>Name of the automation account</td></tr>
-    <tr><td><code>&lt;&lt;automation_runbook_name&gt;&gt;</code></td><td>Name of the runbook created under the automation account</td></tr>
-    <tr><td><code>&lt;&lt;workspace_name&gt;&gt;</code></td><td>Name of the Fabric workspace</td></tr>
+    <tr><td>Azure Subscription ID</td><td>The subscription where Azure resources will be deployed</td></tr>
+    <tr><td>Resource Group Name</td><td>The resource group where Azure resources will be deployed</td></tr>
   </tbody>
 </table>
 
-![Deployment ](images/sqltablecreated.jpg)
+> **Note:** The user must have **Contributor** role on the target Azure Resource Group.
 
+![Create](images_v2/tenant_id_dialog_box.png)
 
-**5.** Deploy Azure resources: Click on Deploy Azure Resources button
-![Azure Deployment](images/deployazureresourcesstart.png)
+**3.** Confirm the deployment. This deploys a Key Vault.
 
-> This will deploy a azure automation account, a runbook and a Keyvault with the names added in the above SQL query executed in the SQL DB.
-> If the Azure Resource Deployment fails, please verify the quota for Automation Account, Key Vault and Runbook for the subscription
-
-![Azure Deployment](images/deployedazureresources.png)
-
-**6.** The Workload opens up, you can so to the settings tab --> extend App Settings section in the left pane --> and click on Deployed Aztifacts
-> You will see the complete list of artifacts and their GUIDs deployed in Azure as well as Fabric
-
-![Deployed Resources](images/deployedresources.png)
----
-
-### Step 4: Setup the Deployed connection objects
-
-**1.** Navigate to Settings in the top right --> Manage connections and gateways
-
-**2.** Find the below three connections created - 
-  * fabricadminagent-pbi-service-admin_<<identifier>>
-  * fabricadminagent-kql-connection-<<<identifier>>>
-  * A connection with the query URI of the KQL DB deployed
-
-**3.** Setup the Authorization for all the 3 connections to be OAuth2 and Edit the credentials --> A Microsoft login popup comes in --> sign in with your account --> Click Save
-> Added screenshots for one connection, follow similar steps for the other 2 connections
-
-![Connection Settings](images/connectionsettings.png)
-
-![Connection Settings](images/connectioncredsset.jpg)
-
-**4.** Navigate to the workspace, and find a pipline named **FabricAdminAgent_FindingsPipeline**
-![Findings Pipeline](images/findingspipeline.png)
-
-**5.** Click on the Outlook activity inside the For Each loop activity on the Pipline --> Click on the Source Settings
-
-![Findings Pipeline](images/outlooksource.png)
-
-**6.** Click on the Edit Icon --> Browse all sources --> Microsoft 365 Outlook --> Name the connection as per your convention --> Sign In --> Click Connect --> Save the Pipeline
-
-![Findings Pipeline](images/selectsource.png)
-![Findings Pipeline](images/notsignin.png)
-![Findings Pipeline](images/signin.png)
-![Findings Pipeline](images/outlookconnectioninpipeline.png)
+![Create](images_v2/azure_deployment_confirmation.png)
 
 ---
 
-### Step 5: Setup Capacity Eventstream and KQL DB
+### Step 7: Note the Deployed Resources
 
->  This is a crucial step for the Fabric Admin Agent to be working. Fabric Capacity Overview Events must be enabled for the Tenant.
+**1.** In the Fabric Admin Agent workload item, navigate to the **Configuration** tab.
 
-For each capacity to be onboarded to the Fabric Admin Agent:
+**2.** Expand the **Deployed Artifacts** section in the left pane.
 
-**1.** Create an event stream for the capacity.
+**3.** Note down the names and GUIDs of the following deployed artifacts:
 
-![Eventstream](images/eventstream.png)
+- **Eventhouse** — KQL Eventhouse for real-time capacity events
+- **Semantic Model** — for capacity monitoring reports
+- **PBI Connection** — Power BI service connection
+- **PowerBIDataset Connection** — dataset refresh connection
 
-![Eventstream Created](images/eventstreamcreated.png)
-
-**2.** Set the source as **Fabric Capacity Overview Events**.
-
-![Eventstream Source](images/eventstreamsource.png)
-
-![Eventstream Source Configured](images/eventstreamsourceconfigured.png)
-
-**3.** Set the destination as the **EventHouse** deployed in Step 3. The table name must be FabricCapacityEvents.
-
-![Eventstream Destination](images/eventstreamdestination.png)
-
-![Eventstream Destination Configured](images/eventstreamdestinationconfigured.png)
-
-**4.** Save and publish the event stream topology.
+![Create](images_v2/deployed_artifacts.png)
 
 ---
 
-### Step 8: Configure Azure Key Vault
+### Step 8: Deploy the Function App via ARM Template
 
-In Azure Key Vault deployed with the name adminagentvault_<identifier>, create the following secrets:
+A custom ARM template deployment provisions the Azure Function App used for capacity operations. This must be done manually in the Azure Portal using the ARM template provided by the Fabric Admin Agent team.
+
+**1.** In the Azure Portal, navigate to **Deploy a custom template** (search for "Deploy a custom template" in the search bar, or go to [portal.azure.com/#create/Microsoft.Template](https://portal.azure.com/#create/Microsoft.Template)).
+
+**2.** Click **Build your own template in the editor**, paste in the ARM template JSON from the [ARM-FunctionApp-FAA.json](https://github.com/MAQ-Software-Solutions/Fabric-Admin-Agent/blob/main/ARM-FunctionApp-FAA.json) file, and click **Save**.
+
+![Create](images_v2/custom_deployment.png)
+
+**3.** Provide the following required input parameters:
+
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
+  <thead>
+    <tr><th>Parameter</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Function App Name</td><td>Name for the new Azure Function App</td></tr>
+    <tr><td>Key Vault Name</td><td>Name of the Key Vault deployed in Step 6</td></tr>
+    <tr><td>KQL DB URI</td><td>Query URI of the KQL Database (from Step 7)</td></tr>
+    <tr><td>KQL DB Name</td><td>Name of the KQL Database (from Step 7)</td></tr>
+  </tbody>
+</table>
+
+![Create](images_v2/input_parameters_function_app.png)
+
+**3.** Submit the deployment. This takes approximately **2–3 minutes**.
+
+![Create](images_v2/azure_deployment_complete.png)
+
+---
+
+### Step 9: Copy the Function App Managed Identity
+
+**1.** In the Azure Portal, navigate to the deployed **Function App**.
+
+**2.** Go to **Settings → Identity**.
+
+**3.** Under the **System assigned** tab, copy the **Object (principal) ID**.
+
+![Create](images_v2/function_app_identity.png)
+
+---
+
+### Step 10: Grant Workspace Contributor Role to the Function App
+
+**1.** Navigate to the Fabric workspace in the Fabric Portal.
+
+**2.** Go to **Workspace settings → Manage access**.
+
+**3.** Add the Function App's managed identity (using the Object ID from Step 9) with the **Contributor** role.
+
+![Create](images_v2/function_app_fabric_access.png)
+
+---
+
+### Step 11: Grant Capacity Roles to the Function App Identity
+
+For each capacity to be onboarded, grant the following Fabric permissions to the Function App's managed identity:
+
+- **Capacity.Read**
+- **Capacity.Write**
+
+**1.** Go to **Microsoft Fabric Admin Portal → Capacities**.
+
+**2.** Select the target capacity.
+
+**3.** Add the Function App's managed identity with the required roles.
+
+![Create](images_v2/function_app_capacity_access.png)
+
+---
+
+### Step 12: Grant Key Vault Secrets User Role to the Function App
+
+**1.** In the Azure Portal, navigate to the deployed **Key Vault**.
+
+**2.** Go to **Access control (IAM) → Add role assignment**.
+
+**3.** Assign the **Key Vault Secrets User** role to the Function App's managed identity.
+
+![Create](images_v2/function_app_vault_access.png)
+
+---
+
+### Step 13: Create a High-Volume Email (HVE) Account and Store Secrets in the Key Vault
+
+The Fabric Admin Agent sends alert notification emails using a dedicated email account. Microsoft recommends using a **High Volume Email (HVE)** account for reliable delivery at scale.
+
+**Create the HVE account:**
+
+**1.** Sign in to the [Microsoft 365 admin center](https://admin.microsoft.com).
+
+**2.** Go to **Users → Active users** and create a new user (e.g., `fabricadminagent-alerts@yourdomain.com`).
+
+**3.** Assign the user a license that includes Exchange Online (e.g., Exchange Online Plan 1 or Microsoft 365 Business Basic).
+
+**4.** Navigate to the [Exchange admin center](https://admin.exchange.microsoft.com) → **Settings → Mail flow** → **High volume email**.
+
+**5.** Enable HVE for the mailbox and note down the SMTP credentials.
+
+> **[Screenshot: Exchange admin center — High volume email settings with the new mailbox enabled]**
+
+<!-- > **Note:** Alternatively, you can use an existing shared mailbox or a standard Microsoft 365 account with an app password. HVE is recommended for production use to avoid throttling. -->
+
+**Store the secrets in the Key Vault:**
+
+In the deployed Key Vault, create the following secrets:
 
 <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
   <thead>
     <tr><th>Secret Name</th><th>Value</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>FabricAdminAgentClientId</code></td><td>Service Principal Application (Client) ID</td></tr>
-    <tr><td><code>FabricAdminAgentClientSecret</code></td><td>Service Principal Client Secret</td></tr>
-    <tr><td><code>TenantID</code></td><td>Azure Active Directory Tenant ID</td></tr>
+    <tr><td><code>FabricAdminAgentEmail</code></td><td>Email address used for sending alert notifications</td></tr>
+    <tr><td><code>FabricAdminAgentEmailPassword</code></td><td>Password / App password for the notification email account</td></tr>
   </tbody>
 </table>
 
-Grant the Fabric Workspace Managed Identity (or the executing principal) **GET** permission on secrets.
-
-Note down the **Key Vault URL** — this will be stored in the KQL ConfigTable.
-
-![Azure Vault](images/azurevault.png)
+> **[Screenshot: Azure Key Vault — Secrets blade showing FabricAdminAgentEmail and FabricAdminAgentEmailPassword secret entries]**
 
 ---
 
-### Step 9: Set Up the Historical Data Pipeline
+### Step 14: Verify Function App Configuration
 
-Open the LoadDataCapacityMetrics pipeline. This pipeline pulls item-level capacity metrics from the Capacity Metrics App.
+**1.** In the Azure Portal, navigate to the deployed **Function App**.
 
-Configure the pipeline parameters and set a **Daily** schedule (recommended — data from Capacity Metrics App is aggregated by day).
+**2.** Go to **Settings → Environment variables** (or **Configuration**).
 
-![Historical Data Pipeline](images/historicaldatapipeline.png)
+**3.** Verify that all Key Vault reference settings display a **resolved** status (green checkmark).
 
----
-
-## 4. Notebook Scheduling
-
-All detection notebooks follow a strict execution order. The three detection notebooks (Sustained Load, Spike Detection, CU Trend) run first, writing alerts to their respective Lakehouse staging tables. **FabricFindings** runs last, reading from all three staging tables and writing the unified, deduplicated results to the SQL FabricFindings table that powers the UI.
-
->  **Execution Order:** Detection Notebooks (run in parallel or sequence) → FabricFindings Notebook → AgentAction Notebook
-
-### 4.1 Detection Notebooks — Schedule: Every 30 Minutes (or Customizable)
-
-Each notebook reads incrementally from the KQL ConfigTable using its own LastProcessedDate key, processes only new data, writes alerts to Lakehouse, and updates its processed timestamp.
-
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>Notebook</th><th>Lakehouse Output Table</th><th>Config Key Updated</th><th>Finding Type</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>SustainedLoadDetection</td><td>dbo.incrementalsustainedloadalerts</td><td>SustainedLoadProcessedDate</td><td>Sustained Load</td></tr>
-    <tr><td>SpikeDetectionEventhouseUtilization</td><td>dbo.spikealerts</td><td>SpikeDetectionProcessedDate</td><td>Spike Detection</td></tr>
-    <tr><td>DetectCUTrend</td><td>dbo.cutrendalerts</td><td>CUTrendProcessedDate</td><td>CU Trending Upwards</td></tr>
-    <tr><td>ShortTermCUPredictions (Inference)</td><td>dbo.CapacityPredictions</td><td>ShortTermPredictionProcessedDate</td><td>Short Term Prediction</td></tr>
-  </tbody>
-</table>
-
-### 4.2 FabricFindings Notebook — Schedule: Every 30 Minutes (after detections)
-
-This is the central aggregator. It runs after all detection notebooks complete and performs:
-
-- Reads all four Lakehouse staging tables (incrementalsustainedloadalerts, spikealerts, cutrendalerts, CapacityPredictions)
-- Selects the most relevant alert per capacity per finding type using the **second-largest processed timestamp** as an anchor to pick the closest EventTime record
-- Normalizes all four sources into a unified schema (FindingId, Finding, CapacityName, CurrentSKU, FinalSKU, EventTime, Status, SuggestedAction, etc.)
-- **Lifecycle management:** existing Active findings are moved to **Expired** when a newer finding for the same capacity+type arrives
-- **Suppression management:** findings with SuppressFinding=true are moved to **Suppressed** status in SQL
-- **Deduplication:** skips any finding that already exists in SQL with the same FindingKey + EventTime composite key
-- **FinalSKU & SuggestedAction:** computed centrally — e.g., if CUPercentage > 90%, recommends next F-SKU tier (F16 → F32)
-- Writes new, deduplicated findings to dbo.FabricFindings in Azure SQL in append mode
-
-### 4.3 AgentAction Notebook — Schedule: Every 30 Minutes (after FabricFindings)
-
-Runs only when AllowAgentAction = true is configured for a capacity. Automatically accepts recommended SKU upgrades without manual intervention:
-
-- Reads CapacitySettings to find capacities with AllowAgentAction = true
-- Filters FabricFindings for Status = Active and non-null FinalSKU for authorised (Capacity, FindingType) pairs
-- Backend handles: SKU upgrade, status update to Approved, email notification to configured recipients
-- Latency depends on notebook scheduling frequency
-
-### 4.4 Model Training Notebook — Schedule: Weekly / On Demand
-
-Trains the global time-series forecasting model for Short Term Predictions:
-
-- Uses last 30 days of CapacityUtilization data from KQL (records with CUPercentage > 500 excluded)
-- Trains 5 model types (Random Forest, Gradient Boosting, XGBoost, LightGBM, Ridge) for each of 3 forecast horizons (5 min, 15 min, 30 min) using Optuna hyperparameter search
-- Best model selected by minimum CV RMSE using TimeSeriesSplit (3 folds)
-- Saves model artifacts to Lakehouse/Files/models/model_{horizon}_{timestamp}.pkl and companion .json metadata
-- Saves categorical encodings to Files/models/encodings/{column}_map.json — these **must** be present before Inference notebook runs
-
-> Detection notebooks (×4) run every 30 min → FabricFindings runs 5 min after → AgentAction runs 5 min after that. Recommended: use Fabric Schedule or a Pipeline to chain execution order.
+> **[Screenshot: Function App — Environment variables panel with Key Vault references showing "Key vault reference" resolved status]**
 
 ---
 
-## 5. Pipeline Scheduling
+### Step 15: Authorize Connections in Manage Connections and Gateways
 
-### 5.1 LoadDataCapacityMetrics Pipeline
+**1.** In the Fabric Portal, go to **Settings (top right) → Manage connections and gateways**.
 
-**What it does:**
+**2.** Locate the **PBI Service connection** (`fabricadminagent-pbi-service-admin_<identifier>`).
 
-- Reads item-level historical capacity data from the Capacity Metrics App (via tables: capacity_metrics_by_item_by_operation_by_day, etc.)
-- Aggregates and stages the data into the FabricAdminAgent Lakehouse in a format ready for Power BI reports and trend analysis notebooks
-- Powers the embedded Power BI reports (FabricAdminAgent_CapacityMetricsInsights) — workspace, item, and operation-level metrics
+**3.** Edit credentials → Set authorization to **OAuth2** → Sign in with an account that has **Tenant.Read.All** or **Tenant.ReadWrite.All** and is a **Fabric Administrator** or **Global Administrator** → Click **Save**.
 
-**Schedule configuration:**
+![Create](images_v2/admin_connection_oauth.png)
 
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>Setting</th><th>Value</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Schedule Frequency</td><td>Daily (recommended: 2:00 AM UTC)</td></tr>
-    <tr><td>Trigger Type</td><td>Scheduled (Fabric Pipeline Scheduled Trigger)</td></tr>
-    <tr><td>Dependency</td><td>Requires FUAM_Lakehouse tables to be available and populated</td></tr>
-    <tr><td>On Failure</td><td>Alert the workspace admin via email; do not block detection notebooks execution</td></tr>
-  </tbody>
-</table>
+**4.** Locate the **PBI Semantic Refresh connection** and repeat the OAuth2 authorization.
+
+![Create](images_v2/semantic_model_connection.png)
 
 ---
 
-## 6. KQL ConfigTable — Full Reference
+### Step 16: Configure Semantic Model OAuth Settings
 
-The **ConfigTable** in the KQL database is the single source of truth for all runtime configurations. All notebooks read from and write to this table.
+**1.** In the Fabric workspace, open the **FabricAdminAgent_CapacityMonitoringAgentDataset** semantic model.
 
-### 6.1 Table Schema
+**2.** Go to **Settings → Data source credentials**.
 
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>Column</th><th>Type</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Category</td><td>string</td><td>Logical grouping: SQLDBConfig, KeyVault, CapacityEvent</td></tr>
-    <tr><td>ConfigKey</td><td>string</td><td>Unique key within category</td></tr>
-    <tr><td>ConfigValue</td><td>string</td><td>The configuration value (connection string, secret name, timestamp, etc.)</td></tr>
-    <tr><td>LastModifiedDate</td><td>datetime</td><td>Auto-updated timestamp; used to select most recent value per key</td></tr>
-    <tr><td>IsActive</td><td>bool</td><td>Only active (<code>true</code>) records are read by notebooks</td></tr>
-  </tbody>
-</table>
+**3.** Edit the KQL DB source credentials and set them to **OAuth2**.
 
-### 6.2 Category: SQLDBConfig
-
-SQL connection metadata. Notebooks use these values to construct the JDBC connection URL.
-
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>ConfigKey</th><th>Example Value</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>SQLServerName</td><td><code>&lt;server&gt;.database.windows.net</code></td><td>Azure SQL Server hostname</td></tr>
-    <tr><td>SQLDatabaseName</td><td><code>FabricAdminAgentDB</code></td><td>Target SQL Database name</td></tr>
-  </tbody>
-</table>
-
-### 6.3 Category: KeyVault
-
-Names of Azure Key Vault secrets (not the secret values themselves — notebooks fetch actual values at runtime via mssparkutils).
-
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>ConfigKey</th><th>Example Value (Secret Name in KV)</th><th>Purpose</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>KeyVaultName</td><td><code>adminagentvault</code></td><td>Key Vault where your secrets are stored</td></tr>
-    <tr><td>ClientId</td><td><code>FabricAdminAgentClientId</code></td><td>Name of secret holding the Service Principal App ID</td></tr>
-    <tr><td>ClientSecret</td><td><code>FabricAdminAgentClientSecret</code></td><td>Name of secret holding the Service Principal password</td></tr>
-    <tr><td>TenantId</td><td><code>TenantID</code></td><td>Name of secret holding the AAD Tenant ID</td></tr>
-  </tbody>
-</table>
-
-### 6.4 Category: CapacityEvent — Processed Timestamps
-
-Each detection notebook reads its own **last-processed timestamp** from ConfigTable and updates it after each run. This enables incremental processing — only new data since the last execution is processed. On the very first run, if no timestamp exists, the full dataset is processed (cold start).
-
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>ConfigKey</th><th>Updated By</th><th>Used By</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>SustainedLoadProcessedDate</td><td>SustainedLoadDetection notebook</td><td>Filters SustainedLoadFindings WHERE WindowStart &gt;= this timestamp</td></tr>
-    <tr><td>SpikeDetectionProcessedDate</td><td>SpikeDetectionEventhouseUtilization notebook</td><td>Filters CapacityUtilization WHERE WindowStartTime &gt;= this timestamp</td></tr>
-    <tr><td>CUTrendProcessedDate</td><td>DetectCUTrend notebook</td><td>Filters SustainedLoadFindings WHERE WindowStart &gt;= this timestamp</td></tr>
-    <tr><td>ShortTermPredictionProcessedDate</td><td>Inference: ShortTermCUPredictions notebook</td><td>Used by FabricFindings as anchor for selecting latest prediction record</td></tr>
-  </tbody>
-</table>
+![Create](images_v2/kql_data_source_connection.png)
 
 ---
 
-## 7. Onboarding a New Capacity
+### Step 17: Add a Capacity in the Workload
+
+**1.** Open the **Fabric Admin Agent** workload item.
+
+**2.** Navigate to the **Configuration** tab.
+
+**3.** Click **Add Capacity** and select the capacity to onboard.
+
+> **Note:** The user must be a **Fabric Capacity Administrator** for the respective capacity.
+
+![Create](images_v2/no_capacities.png)
+
+![Create](images_v2/onboard_capacity.png)
+
+![Create](images_v2/capacity_onboarded.png)
+
+---
+
+### Step 18: Configure Finding Settings
+
+For each onboarded capacity, configure the detection thresholds and notification settings:
+
+**1.** In the **Configuration** tab, select the onboarded capacity.
+
+**2.** Fill in the finding configuration fields:
+
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
+  <thead>
+    <tr><th>Setting</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Sensitivity</td><td>Detection sensitivity level for anomaly findings</td></tr>
+    <tr><td>Email Recipients</td><td>Comma-separated list of email addresses to receive alert notifications</td></tr>
+    <tr><td>Thresholds</td><td>CU percentage thresholds for each finding type (Sustained Load, Spike, Trend)</td></tr>
+    <tr><td>Min F-SKU</td><td>Minimum allowed SKU for auto-scaling actions</td></tr>
+    <tr><td>Max F-SKU</td><td>Maximum allowed SKU for auto-scaling actions</td></tr>
+  </tbody>
+</table>
+
+**3.** Click **Save**.
+
+![Create](images_v2/throttling_risk.png)
+
+![Create](images_v2/idle_capacity.png)
+
+---
+
+### Step 19: Configure and Schedule the Data Pipeline
+
+**1.** In the Fabric workspace, open the **FabricAdminAgent_LoadCapacityMetricsData** pipeline.
+
+**2.** Provide the required pipeline parameters:
+
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
+  <thead>
+    <tr><th>Parameter</th><th>Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Capacity Metrics App Workspace Name</td><td>Name of the workspace where the Capacity Metrics App is installed</td></tr>
+    <tr><td>Capacity Metrics App Model Name</td><td>Name of the Capacity Metrics App semantic model</td></tr>
+  </tbody>
+</table>
+
+**3.** Set a **Daily** schedule (or as required by your refresh cadence).
+
+![Create](images_v2/pipeline_parameters.png)
+
+![Create](images_v2/pipeline_schedule.png)
+
+---
+
+### Step 20: Verify Setup
+
+After completing all steps, confirm the system is operating correctly:
+
+- **Review Active Findings** tab in the Fabric Admin Agent workload should start populating with alerts once capacity events are detected and the detection logic runs.
+- **Monitoring Agent** tab will be populated after the pipeline refresh completes successfully.
+
+> **[Screenshot: Fabric Admin Agent — Review Active Findings tab with sample findings populated]**
+
+> **[Screenshot: Fabric Admin Agent — Monitoring Agent tab populated after a successful pipeline run]**
+
+---
+
+## 4. Onboarding a New Capacity
 
 When a new Fabric capacity needs to be monitored, perform the following steps. These are **per-capacity one-time setup steps** in addition to the one-time infrastructure setup in Section 3.
 
@@ -579,13 +539,11 @@ When a new Fabric capacity needs to be monitored, perform the following steps. T
 
 > **Note:** CapacityId is the Fabric Capacity GUID (find it in the Admin Portal or via the Fabric REST API).
 
-### Step 3: Create Eventstream for the Capacity
+### Step 3: Eventstream Creation
 
-Follow Steps 6–7 from Section 3 for the new capacity:
+When a capacity is onboarded in Step 2, an Eventstream named **`Eventstream-<capacity-name>-Source`** is automatically created in the workspace. No manual Eventstream setup is required.
 
-- Create a new Eventstream using **Capacity Overview Events** as the source.
-- Set the destination to FabricCapacityEvents table in the KQL Eventhouse.
-- Authenticate any new connections.
+> Verify the Eventstream is active and streaming events after onboarding.
 
 ### Step 4: Verify Data Flow
 
@@ -597,86 +555,20 @@ After onboarding, confirm the following:
 
 ---
 
-## 8. Disclaimer
-
-- **Tenant Configuration:** Each Tenant ID can have only one Fabric Admin Agent artifact setup.
+## 5. Disclaimer
 
 - **Capacity Off Behavior:**
   - When a capacity is turned off, the Eventstream also turns off automatically.
   - The Eventstream must be turned on manually after the capacity is re-enabled.
 
-- **Configurable Notebooks:** The following notebooks are configurable: Sustained Load, Spike Detection, CU Trend.
-  Any changes in table names or variable names require corresponding updates in:
-  - Config notebook
-  - Fabric Finding notebook
-  - Any other dependent notebooks or scripts
-
-- **Pipeline Scheduling:** The pipeline schedule must match the refresh schedule of the Capacity Metrics App semantic model.
-
-- **Short-Term Prediction Requirements:** For model training, at least one month of data must be collected from the Capacity Utilization table within Capacity Events.
-
-- **Azure Automation Account Permissions:** The Azure Automation Account used for capacity operations must have the following permissions:
-  - Microsoft.Fabric/capacities/suspend/action
-  - Microsoft.Fabric/capacities/resume/action
+- **Function App Managed Identity Permissions:** The Function App uses a System Assigned Managed Identity. The following permissions must be granted to this identity:
+  - **Key Vault Secrets User** role on the deployed Azure Key Vault (to read email credentials at runtime)
+  - **Contributor** role on the Fabric workspace (to interact with Fabric APIs)
+  - **Capacity.Read** and **Capacity.Write** roles on each monitored Fabric capacity (to scale up, scale down, pause, and resume)
 
 - **Key Vault Secret Naming Convention:** The following Azure Key Vault secrets must be created using the specified naming convention:
-  - FabricAdminAgentClientId
-  - FabricAdminAgentClientSecret
-  - TenantID
-
-- **Service Principal Role:** The Service Principal should have **Contributor** role on the workspace where the Fabric Admin Agent workload is deployed.
-
----
-
-## 9. Common Issues & Troubleshooting
-
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>Symptom</th><th>Likely Cause</th><th>Resolution</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>No data in FabricCapacityEvents</td>
-      <td>Eventstream not running or Capacity Admin role missing</td>
-      <td>Check Eventstream status; verify user has Capacity Admin role on the capacity</td>
-    </tr>
-    <tr>
-      <td>Detection notebook exits early with 'No new data'</td>
-      <td>Last processed timestamp is ahead of available data (or first run with empty table)</td>
-      <td>Check ConfigTable CapacityEvent timestamps; delete the entry to force a cold-start full scan</td>
-    </tr>
-    <tr>
-      <td>FabricFindings notebook fails with JDBC error</td>
-      <td>SQL connection details wrong in ConfigTable or Service Principal not authorized</td>
-      <td>Verify SQLServerName and SQLDatabaseName in ConfigTable; confirm SP has SQL db_datawriter role</td>
-    </tr>
-    <tr>
-      <td>Key Vault secret retrieval fails</td>
-      <td>Role not assigned to that Key Vault</td>
-      <td>Add yourself to Key Vault Access Policy (or RBAC: Key Vault Secrets User)</td>
-    </tr>
-    <tr>
-      <td>AgentAction takes no action (no SKU upgrade)</td>
-      <td>AllowAgentAction = false in CapacitySettings, or no Active findings with non-null FinalSKU</td>
-      <td>Check SQL CapacitySettings.ConfigurationJSON for target capacity; verify findings in FabricFindings</td>
-    </tr>
-    <tr>
-      <td>ML predictions not appearing</td>
-      <td>Model .pkl files missing from Lakehouse (training not run yet)</td>
-      <td>Run TimeForcasting_TimeForecastingModels notebook manually; verify Files/models/ has .pkl and .json artifacts</td>
-    </tr>
-    <tr>
-      <td>Power BI report shows blank / no data</td>
-      <td>Pipeline (LoadDataCapacityMetrics) hasn't run or lakehouse is unavailable</td>
-      <td>Trigger pipeline manually; check FUAM workspace access permissions</td>
-    </tr>
-    <tr>
-      <td>Workload not working</td>
-      <td>Capacity in which the workload is running is either off or has reached its limit</td>
-      <td>Go to the Azure portal and try to resume the capacity</td>
-    </tr>
-  </tbody>
-</table>
+  - FabricAdminAgentEmail
+  - FabricAdminAgentEmailPassword
 
 ---
 
