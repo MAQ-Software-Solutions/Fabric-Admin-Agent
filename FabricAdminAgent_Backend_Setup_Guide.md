@@ -390,7 +390,7 @@ In the deployed Key Vault, create the following secrets:
   </tbody>
 </table>
 
-> **[Screenshot: Azure Key Vault — Secrets blade showing FabricAdminAgentEmail and FabricAdminAgentEmailPassword secret entries]**
+![Create](images_v2/key_vault_secrets.png)
 
 ---
 
@@ -402,7 +402,7 @@ In the deployed Key Vault, create the following secrets:
 
 **3.** Verify that all Key Vault reference settings display a **resolved** status (green checkmark).
 
-> **[Screenshot: Function App — Environment variables panel with Key Vault references showing "Key vault reference" resolved status]**
+![Create](images_v2/function_app_secrets_resolved.png)
 
 ---
 
@@ -512,9 +512,9 @@ After completing all steps, confirm the system is operating correctly:
 - **Review Active Findings** tab in the Fabric Admin Agent workload should start populating with alerts once capacity events are detected and the detection logic runs.
 - **Monitoring Agent** tab will be populated after the pipeline refresh completes successfully.
 
-> **[Screenshot: Fabric Admin Agent — Review Active Findings tab with sample findings populated]**
+![Create](images_v2/capacity_monitoring_agent.png)
 
-> **[Screenshot: Fabric Admin Agent — Monitoring Agent tab populated after a successful pipeline run]**
+![Create](images_v2/review_findings_tab.png)
 
 ---
 
