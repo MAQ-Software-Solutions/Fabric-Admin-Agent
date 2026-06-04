@@ -331,8 +331,8 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 For each capacity to be onboarded, grant the following Fabric permissions to the Function App's managed identity:
 
-- **Capacity.Read**
-- **Capacity.Write**
+- **Microsoft.Fabric/capacities/read**
+- **Microsoft.Fabric/capacities/write**
 
 **1.** Go to **Microsoft Fabric Admin Portal → Capacities**.
 
@@ -533,9 +533,9 @@ When a new Fabric capacity needs to be monitored, perform the following steps. T
 
 ### Step 2: Add Capacity from the Workload
 
-1. Go to **Settings** in the Fabric Admin Agent.
+1. Go to **Configuration** in the Fabric Admin Agent.
 2. Navigate to the **Capacities** tab.
-3. Click **Add Capacities** — this will automatically insert the row in SQL DB.
+3. Click **Add Capacities** — this will automatically insert the row in KQL DB.
 
 > **Note:** CapacityId is the Fabric Capacity GUID (find it in the Admin Portal or via the Fabric REST API).
 
@@ -564,7 +564,7 @@ After onboarding, confirm the following:
 - **Function App Managed Identity Permissions:** The Function App uses a System Assigned Managed Identity. The following permissions must be granted to this identity:
   - **Key Vault Secrets User** role on the deployed Azure Key Vault (to read email credentials at runtime)
   - **Contributor** role on the Fabric workspace (to interact with Fabric APIs)
-  - **Capacity.Read** and **Capacity.Write** roles on each monitored Fabric capacity (to scale up, scale down, pause, and resume)
+  - **Microsoft.Fabric/capacities/read** and **Microsoft.Fabric/capacities/write** roles on each monitored Fabric capacity (to scale up, scale down, pause, and resume)
 
 - **Key Vault Secret Naming Convention:** The following Azure Key Vault secrets must be created using the specified naming convention:
   - FabricAdminAgentEmail
