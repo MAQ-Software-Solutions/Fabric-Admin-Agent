@@ -29,9 +29,23 @@
 
 ## 1. Overview & Goal
 
-The Fabric Admin Agent is a proactive capacity management solution built on **Microsoft Fabric Workload Extensibility Toolkit**. It continuously monitors Fabric capacity telemetry in near real-time, detects anomalies (sustained overloads, sudden spikes, upward trends), predicts future CU consumption, and surfaces actionable recommendations — moving tenant admins from reactive troubleshooting to proactive stewardship.
+The Fabric Admin Agent is a real-time capacity monitoring and optimization solution built on the **Microsoft Fabric Workload Extensibility Toolkit**. It continuously ingests live Fabric Capacity Overview Events, evaluates capacity health in near real-time, and surfaces actionable findings to help administrators proactively manage Microsoft Fabric capacities.
 
->  **Goal:** Deploy the complete Fabric Admin Agent backend so that, after onboarding a new capacity, the system automatically ingests live capacity events, runs detection notebooks on a schedule, surfaces findings to the UI, and sends notifications — all without manual intervention.
+The solution currently focuses on two key capacity health scenarios:
+
+* **Throttling Risk** – Identifies capacities that are approaching utilization levels that may result in Fabric throttling and degraded user experience.
+* **Idle Capacity** – Identifies consistently underutilized capacities that may present opportunities for cost optimization. Fabric capacities can become overloaded and experience throttling when compute consumption exceeds available capacity limits.
+
+In addition to real-time monitoring, the Fabric Admin Agent provides **automated capacity scaling**. Administrators can define **minimum** and **maximum SKU guardrails** for each monitored capacity. When autoscaling is enabled, the agent automatically scales capacities up or down within the configured SKU boundaries based on observed utilization patterns, helping balance performance and cost while maintaining administrative control.
+
+The solution also includes an integrated email notification framework that sends alerts for:
+
+* Throttling Risk findings
+* Idle Capacity findings
+* Automatic scale-up actions
+* Automatic scale-down actions
+
+> **Goal:** Deploy the complete Fabric Admin Agent solution so that, after onboarding a Fabric capacity, the system automatically ingests live Capacity Overview Events, detects throttling risk and idle capacity conditions in real time, performs automatic capacity scaling within administrator-defined SKU guardrails, surfaces findings through the Fabric Admin Agent UI, and sends email notifications for both findings and autoscale actions with minimal operational intervention.
 
 ### 1.1 Core Architecture
 
@@ -237,7 +251,7 @@ Perform all steps below once per environment deployment. Each step is a dependen
 
 ---
 
-### Step 0: Enable Required Fabric Tenant Settings
+### Step 1: Enable Required Fabric Tenant Settings
 
 Before deploying or using the Fabric Admin Agent workload, a Fabric Administrator must enable the required tenant settings for additional workloads in the Microsoft Fabric Admin Portal.
 
@@ -247,7 +261,7 @@ Before deploying or using the Fabric Admin Agent workload, a Fabric Administrato
 
 ---
 
-#### 0.1 Enable "Users can see and work with additional workloads not validated by Microsoft"
+#### 1.1 Enable "Users can see and work with additional workloads not validated by Microsoft"
 
 This setting allows users to discover and use unverified workloads such as Fabric Admin Agent.
 
@@ -259,7 +273,7 @@ This setting allows users to discover and use unverified workloads such as Fabri
 
 ---
 
-#### 0.2 Enable "Workspace admins can add and remove additional workloads"
+#### 1.2 Enable "Workspace admins can add and remove additional workloads"
 
 This setting allows workspace administrators to install and manage workloads within their Fabric workspaces.
 
@@ -271,7 +285,7 @@ This setting allows workspace administrators to install and manage workloads wit
 
 ---
 
-#### 0.3 Enable "Capacity admins and contributors can add and remove additional workloads"
+#### 1.3 Enable "Capacity admins and contributors can add and remove additional workloads"
 
 This setting allows capacity administrators and contributors to manage workloads on Fabric capacities.
 
@@ -302,7 +316,7 @@ After enabling the settings:
 Once these settings are enabled, proceed with **Step 1: Verify Workspace Access**.
 
 
-### Step 1: Verify Workspace Access
+### Step 2: Verify Workspace Access
 
 Ensure the user performing the setup has at least **Contributor** role on the Fabric workspace where the Fabric Admin Agent will be deployed.
 
@@ -310,7 +324,7 @@ Ensure the user performing the setup has at least **Contributor** role on the Fa
 
 ---
 
-### Step 2: Create the Fabric Admin Agent Workload Item
+### Step 3: Create the Fabric Admin Agent Workload Item
 
 **1.** In the Fabric workspace, click the **New Item** button.
 
@@ -330,7 +344,7 @@ The item is created in its initial state.
 
 ---
 
-### Step 3: Approve Frontend Service Principal Permissions
+### Step 4: Approve Frontend Service Principal Permissions
 
 Upon creation, a popup appears requesting permissions for the **Frontend Service Principal (SPN)**. This is required for the workload UI to access Fabric APIs on behalf of the user.
 
@@ -345,7 +359,7 @@ Upon creation, a popup appears requesting permissions for the **Frontend Service
 
 ---
 
-### Step 4: Authorize the Backend Application
+### Step 5: Authorize the Backend Application
 
 The Backend app registration requires admin consent and **must be performed by** a **Global Administrator**, **Privileged Role Administrator**, **Application Administrator**, or **Cloud Application Administrator**.
 
@@ -361,7 +375,7 @@ The Backend app registration requires admin consent and **must be performed by**
 
 ---
 
-### Step 5: Deploy Fabric Resources
+### Step 6: Deploy Fabric Resources
 
 Once both SPN approvals are complete:
 
@@ -379,7 +393,7 @@ Once both SPN approvals are complete:
 
 ---
 
-### Step 6: Deploy Azure Resources
+### Step 7: Deploy Azure Resources
 
 **1.** Click the **Deploy Azure Resources** button.
 
@@ -407,7 +421,7 @@ Once both SPN approvals are complete:
 
 ---
 
-### Step 7: Note the Deployed Resources
+### Step 8: Note the Deployed Resources
 
 **1.** In the Fabric Admin Agent workload item, navigate to the **Configuration** tab.
 
@@ -424,7 +438,7 @@ Once both SPN approvals are complete:
 
 ---
 
-### Step 8: Deploy the Function App via ARM Template
+### Step 9: Deploy the Function App via ARM Template
 
 A custom ARM template deployment provisions the Azure Function App used for capacity operations. This must be done manually in the Azure Portal using the ARM template provided by the Fabric Admin Agent team.
 
@@ -469,7 +483,7 @@ The following resources should be visible in the Azure Resource Group:
 
 ---
 
-### Step 9: Copy the Function App Managed Identity
+### Step 10: Copy the Function App Managed Identity
 
 **1.** In the Azure Portal, navigate to the deployed **Function App**.
 
@@ -481,7 +495,7 @@ The following resources should be visible in the Azure Resource Group:
 
 ---
 
-### Step 10: Grant Workspace Contributor Role to the Function App
+### Step 11: Grant Workspace Contributor Role to the Function App
 
 **1.** Navigate to the Fabric workspace in the Fabric Portal.
 
@@ -493,7 +507,7 @@ The following resources should be visible in the Azure Resource Group:
 
 ---
 
-### Step 11: Grant Capacity Roles to the Function App Identity
+### Step 12: Grant Capacity Roles to the Function App Identity
 
 For each capacity to be onboarded, grant the following Fabric permissions to the Function App's managed identity:
 
@@ -510,7 +524,7 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 ---
 
-### Step 12: Grant Key Vault Secrets User Role to the Function App
+### Step 13: Grant Key Vault Secrets User Role to the Function App
 
 **1.** In the Azure Portal, navigate to the deployed **Key Vault**.
 
@@ -522,7 +536,7 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 ---
 
-### Step 13: Create a High-Volume Email (HVE) Account and Store Secrets in the Key Vault
+### Step 14: Create a High-Volume Email (HVE) Account and Store Secrets in the Key Vault
 
 The Fabric Admin Agent sends alert notification emails using a dedicated email account. Microsoft recommends using a **High Volume Email (HVE)** account for reliable delivery at scale.
 
@@ -560,7 +574,7 @@ In the deployed Key Vault, create the following secrets:
 
 ---
 
-### Step 14: Verify Function App Configuration
+### Step 15: Verify Function App Configuration
 
 **1.** In the Azure Portal, navigate to the deployed **Function App**.
 
@@ -572,7 +586,7 @@ In the deployed Key Vault, create the following secrets:
 
 ---
 
-### Step 15: Authorize Connections in Manage Connections and Gateways
+### Step 16: Authorize Connections in Manage Connections and Gateways
 
 The Fabric Admin Agent supports multiple authentication methods for its Fabric connections. Configure the authentication method that best aligns with your organization's security and governance requirements.
 
@@ -582,7 +596,7 @@ The Fabric Admin Agent supports multiple authentication methods for its Fabric c
 
 ---
 
-**15.1 Configure the PBI Service Connection**
+**16.1 Configure the PBI Service Connection**
 
 The PBI Service Connection is used by the Fabric Admin Agent to retrieve tenant metadata, including Fabric capacities and workspaces.
 
@@ -602,7 +616,7 @@ The PBI Service Connection is used by the Fabric Admin Agent to retrieve tenant 
 
 ---
 
-**15.2 Configure the PBI Semantic Refresh Connection**
+**16.2 Configure the PBI Semantic Refresh Connection**
 
 The PBI Semantic Refresh Connection is used to access and refresh semantic models used by the workload.
 
@@ -679,7 +693,7 @@ If using Workspace Identity:
 
 ---
 
-### Step 16: Configure Semantic Model OAuth Settings
+### Step 17: Configure Semantic Model OAuth Settings
 
 **1.** In the Fabric workspace, open the **FabricAdminAgent_CapacityMonitoringAgentDataset** semantic model.
 
@@ -691,7 +705,7 @@ If using Workspace Identity:
 
 ---
 
-### Step 17: Add a Capacity in the Workload
+### Step 18: Add a Capacity in the Workload
 
 **1.** Open the **Fabric Admin Agent** workload item.
 
@@ -709,7 +723,7 @@ If using Workspace Identity:
 
 ---
 
-### Step 18: Configure Finding Settings
+### Step 19: Configure Finding Settings
 
 For each onboarded capacity, configure the detection thresholds and notification settings:
 
@@ -738,7 +752,7 @@ For each onboarded capacity, configure the detection thresholds and notification
 
 ---
 
-### Step 19: Configure and Schedule the Data Pipeline
+### Step 20: Configure and Schedule the Data Pipeline
 
 **1.** In the Fabric workspace, open the **FabricAdminAgent_LoadCapacityMetricsData** pipeline.
 
@@ -762,7 +776,7 @@ For each onboarded capacity, configure the detection thresholds and notification
 
 ---
 
-### Step 20: Verify Setup
+### Step 21: Verify Setup
 
 After completing all steps, confirm the system is operating correctly:
 
