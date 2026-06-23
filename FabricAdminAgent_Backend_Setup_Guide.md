@@ -118,26 +118,114 @@ All artifacts are deployed in the Fabric workspace used by the Admin Agent:
 
 <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
   <thead>
-    <tr><th>Resource</th><th>Configuration</th><th>Purpose</th></tr>
+    <tr><th>Resource</th><th>Configuration / Required Permission</th><th>Purpose</th></tr>
   </thead>
   <tbody>
-    <tr><td>Azure Key Vault</td><td>User must have Key Vault Administrator role</td><td>Stores ClientId, ClientSecret, TenantId</td></tr>
-    <tr><td>Service Principal (App)</td><td>Workspace Admin/Member role; Client Credentials grant; assigned SQL db_owner or db_datawriter</td><td>Used by all notebooks for SQL auth, operations and Key Vault access via mssparkutils</td></tr>
-    <tr><td>Fabric Capacity (Azure resource)</td><td>Contributor role on the Fabric Capacity resource in Azure</td><td>Scale up, scale down, pause and resume the capacity</td></tr>
+    <tr>
+      <td>Azure Function App</td>
+      <td>Created during custom deployment</td>
+      <td>Hosts APIs for capacity operations, notification services, and automation workflows.</td>
+    </tr>
+    <tr>
+      <td>App Service Plan</td>
+      <td>Created during custom deployment</td>
+      <td>Provides compute resources for the Azure Function App.</td>
+    </tr>
+    <tr>
+      <td>Azure Storage Account</td>
+      <td>Created during custom deployment</td>
+      <td>Provides storage required by the Azure Function App runtime and application operations.</td>
+    </tr>
+    <tr>
+      <td>Log Analytics Workspace</td>
+      <td>Created during custom deployment</td>
+      <td>Stores operational logs, diagnostics, and monitoring telemetry for the function app.</td>
+    </tr>
+    <tr>
+      <td>Application Insights</td>
+      <td>Created during custom deployment</td>
+      <td>Provides application monitoring, tracing, performance metrics, and diagnostics for the function app.</td>
+    </tr>
+    <tr>
+      <td>Azure Key Vault</td>
+      <td>User must have <strong>Key Vault Administrator</strong> role during setup</td>
+      <td>Stores HVE (High Volume Email) account credentials</td>
+    </tr>
+    <tr>
+      <td>Application Insights Smart Detection</td>
+      <td>Automatically created by Azure Monitor</td>
+      <td>Detects application failures, performance anomalies, and operational issues.</td>
+    </tr>
+    <tr>
+      <td>Action Group</td>
+      <td>Automatically created by Azure Monitor</td>
+      <td>Used by Smart Detection alert rules to generate and route alert notifications.</td>
+    </tr>
   </tbody>
 </table>
 
-### 2.3 Fabric Capacity Events — Capacity Admin Requirement
+#### Azure Deployment Outputs
 
-The Eventstream uses **Capacity Overview Events** as its source. This data source is only visible and selectable in the Eventstream editor if the logged-in user (or the Service Principal configuring the stream) is a **Capacity Administrator** on the target capacity in the Microsoft Fabric Admin Portal.
+**Automated Deployment**
 
-Without this role:
+- Azure Key Vault
 
-- The 'Capacity Overview Events' source option will **not** appear in the Eventstream source picker.
-- No live CU telemetry will flow into the KQL DB.
-- All detection notebooks will have no data to process and will exit early.
+**Custom ARM Template Deployment**
 
->  **How to Assign:** Go to Microsoft Fabric Admin Portal → Capacities → select the capacity → Capacity admins tab → Add the user or Service Principal.
+- Azure Storage Account
+- Log Analytics Workspace
+- Application Insights
+- App Service Plan
+- Azure Function App
+
+**Automatically Created by Azure Monitor**
+
+- Application Insights Smart Detection
+- Smart Detector Alert Rule (Failure Anomalies)
+- Action Group
+
+
+#### Minimum Azure Permissions Required
+
+The user or deployment Service Principal performing the setup must have:
+
+* **Contributor** (or higher) on the target Azure Resource Group.
+* **Key Vault Administrator** (or equivalent permissions to create and manage secrets) on the Azure Key Vault.
+
+> **Note:** No Azure RBAC permissions on the Microsoft Fabric Capacity Azure resource are required solely for Capacity Overview Event ingestion. Fabric capacity permissions are documented separately in Section 2.3.
+
+### 2.3 Fabric Capacity Events — Required Permissions
+
+The workload uses **Capacity Overview Events** as the source for its Eventstream. These events provide live Capacity Unit (CU) telemetry that is ingested into the KQL Database and processed by the monitoring notebooks.
+
+To configure and operate this functionality, the onboarding user or Service Principal must have the following permissions:
+
+| Scope                                                          | Required Permission                                 |
+| -------------------------------------------------------------- | --------------------------------------------------- |
+| Microsoft Fabric Capacity                                      | **Contributor or higher** on the monitored capacity |
+| Workspace hosting the Eventstream, KQL Database, and notebooks | **Contributor or higher**                           |
+
+Without these permissions:
+
+* The **Capacity Overview Events** source may not be available for configuration in the Eventstream.
+* No live CU telemetry will be streamed into the KQL Database.
+* Monitoring and detection notebooks will have no capacity telemetry data to process.
+
+> **Note:** Microsoft documentation specifies that users must have **Contributor or higher permissions on the selected capacity** to stream Capacity Overview Events.
+
+#### How to Assign Capacity Permissions
+
+1. Open **Microsoft Fabric Admin Portal**.
+2. Navigate to **Capacities**.
+3. Select the target capacity.
+4. Grant the onboarding user or Service Principal **Contributor** (or higher) permissions on the capacity.
+
+#### How to Assign Workspace Permissions
+
+1. Open the target Fabric workspace.
+2. Select **Manage Access**.
+3. Add the onboarding user or Service Principal.
+4. Grant **Contributor** (or higher) permissions.
 
 ---
 
@@ -148,6 +236,70 @@ Perform all steps below once per environment deployment. Each step is a dependen
 > **Prerequisite — Microsoft Fabric Capacity Metrics App:** Before starting, ensure the Capacity Metrics App is installed and its semantic model is refreshing. Note down the **Workspace Name** and **Semantic Model Name** — these are required in Step 19.
 
 ---
+
+### Step 0: Enable Required Fabric Tenant Settings
+
+Before deploying or using the Fabric Admin Agent workload, a Fabric Administrator must enable the required tenant settings for additional workloads in the Microsoft Fabric Admin Portal.
+
+**Navigate to:**
+
+**Microsoft Fabric Admin Portal → Tenant Settings → Additional Workloads**
+
+---
+
+#### 0.1 Enable "Users can see and work with additional workloads not validated by Microsoft"
+
+This setting allows users to discover and use unverified workloads such as Fabric Admin Agent.
+
+1. Locate **Users can see and work with additional workloads not validated by Microsoft**.
+2. Enable the setting.
+3. Apply it to the required users or security groups.
+
+![Users can see and work with additional workloads not validated by Microsoft](images_v2/additional_workloads_unvalidated.png)
+
+---
+
+#### 0.2 Enable "Workspace admins can add and remove additional workloads"
+
+This setting allows workspace administrators to install and manage workloads within their Fabric workspaces.
+
+1. Locate **Workspace admins can add and remove additional workloads (Preview)**.
+2. Enable the setting.
+3. Apply it to the required users or security groups.
+
+![Workspace admins can add and remove additional workloads](images_v2/workspace_admins_workloads.png)
+
+---
+
+#### 0.3 Enable "Capacity admins and contributors can add and remove additional workloads"
+
+This setting allows capacity administrators and contributors to manage workloads on Fabric capacities.
+
+1. Locate **Capacity admins and contributors can add and remove additional workloads**.
+2. Enable the setting.
+3. Apply it to the required users or security groups.
+4. If desired, enable **Only capacity admins can add and remove workloads** to further restrict access.
+
+![Capacity admins and contributors can add and remove additional workloads](images_v2/capacity_admins_workloads.png)
+
+---
+
+> **Important:** All three settings must be enabled before the Fabric Admin Agent workload can be installed, deployed, or used within the tenant.
+
+#### Required Role
+
+The user enabling these settings must be a **Fabric Administrator** or **Global Administrator**.
+
+#### Verification
+
+After enabling the settings:
+
+1. Click **Apply** for each setting.
+2. Wait several minutes for the changes to propagate across the tenant.
+3. Verify that the **Fabric Admin Agent** workload is available from the **New Item** experience in the target workspace.
+
+Once these settings are enabled, proceed with **Step 1: Verify Workspace Access**.
+
 
 ### Step 1: Verify Workspace Access
 
@@ -248,7 +400,7 @@ Once both SPN approvals are complete:
 
 ![Create](images_v2/tenant_id_dialog_box.png)
 
-**3.** Confirm the deployment. This deploys a Key Vault.
+**3.** Confirm the deployment. This step only deploys a Key Vault.
 
 ![Create](images_v2/azure_deployment_confirmation.png)
 
@@ -297,9 +449,22 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 ![Create](images_v2/input_parameters_function_app.png)
 
-**3.** Submit the deployment. This takes approximately **2–3 minutes**.
+**4.** Submit the deployment. This takes approximately **2–3 minutes**.
 
 ![Create](images_v2/azure_deployment_complete.png)
+
+**5.** Verify that all Azure resources have been successfully deployed.
+
+![Create](images_v2/azure_resources.png)
+
+The following resources should be visible in the Azure Resource Group:
+
+- Azure Key Vault
+- Azure Function App
+- App Service Plan
+- Azure Storage Account
+- Log Analytics Workspace
+- Application Insights
 
 ---
 
@@ -408,17 +573,108 @@ In the deployed Key Vault, create the following secrets:
 
 ### Step 15: Authorize Connections in Manage Connections and Gateways
 
-**1.** In the Fabric Portal, go to **Settings (top right) → Manage connections and gateways**.
+The Fabric Admin Agent supports multiple authentication methods for its Fabric connections. Configure the authentication method that best aligns with your organization's security and governance requirements.
+
+**1.** In the Fabric Portal, navigate to:
+
+**Settings (top right) → Manage connections and gateways**
+
+---
+
+**15.1 Configure the PBI Service Connection**
+
+The PBI Service Connection is used by the Fabric Admin Agent to retrieve tenant metadata, including Fabric capacities and workspaces.
 
 **2.** Locate the **PBI Service connection** (`fabricadminagent-pbi-service-admin_<identifier>`).
 
-**3.** Edit credentials → Set authorization to **OAuth2** → Sign in with an account that has **Tenant.Read.All** or **Tenant.ReadWrite.All** and is a **Fabric Administrator** or **Global Administrator** → Click **Save**.
-
 ![Create](images_v2/admin_connection_oauth.png)
 
-**4.** Locate the **PBI Semantic Refresh connection** and repeat the OAuth2 authorization.
+**3.** Edit the connection credentials and select one of the supported authentication methods.
+
+| Authentication Method | Minimum Requirements                                                               |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| OAuth2                | Fabric Administrator (recommended) or Global Administrator                         |
+| Service Principal     | Service Principal configured for Power BI/Fabric REST APIs and Power BI Admin APIs |
+| Workspace Identity    | Workspace Identity enabled and granted required Fabric permissions                 |
+
+**4.** Save the connection configuration.
+
+---
+
+**15.2 Configure the PBI Semantic Refresh Connection**
+
+The PBI Semantic Refresh Connection is used to access and refresh semantic models used by the workload.
+
+**5.** Locate the **PBI Semantic Refresh connection**.
 
 ![Create](images_v2/semantic_model_connection.png)
+
+**6.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
+
+**7.** Save the connection configuration.
+
+---
+
+### OAuth2 Requirements
+
+If using OAuth2:
+
+#### PBI Service Connection
+
+* Sign in using a **Fabric Administrator** account (recommended).
+* The account must have permission to access the Power BI Admin APIs used by the workload.
+
+#### PBI Semantic Refresh Connection
+
+* Access to the Fabric workspace.
+* Access to the semantic model.
+* Contributor (or higher) permissions on the workspace are recommended.
+
+---
+
+### Service Principal Requirements
+
+If using a Service Principal:
+
+#### Microsoft Entra Configuration
+
+1. Create a Microsoft Entra App Registration.
+2. Create a Microsoft Entra Security Group.
+3. Add the Service Principal to the Security Group.
+
+#### Fabric Tenant Settings
+
+Enable the following tenant settings and scope them to the Security Group containing the Service Principal:
+
+* Service principals can call Fabric public APIs
+
+![Create](images_v2/spn_fabric_rest.png)
+
+* Service principals can access read-only admin APIs
+
+![Create](images_v2/read-only-admin-apis.png)
+
+#### Fabric Permissions
+
+Grant the Service Principal:
+
+* Access to the required Fabric workspaces.
+* Access to the semantic models used by the workload.
+* Contributor (or higher) permissions on monitored Fabric capacities.
+
+> **Note:** The Fabric Admin Agent only performs read operations against Power BI Admin APIs to retrieve capacities and workspaces. The **Service principals can access admin APIs used for updates** tenant setting is not required.
+
+---
+
+### Workspace Identity Requirements
+
+If using Workspace Identity:
+
+* Workspace Identity must be enabled for the Fabric workspace.
+* Workspace Identity must have access to the required Fabric workspaces.
+* Workspace Identity must have access to the semantic models used by the workload.
+* Workspace Identity must be granted Contributor (or higher) permissions on monitored Fabric capacities.
+
 
 ---
 
@@ -544,6 +800,8 @@ When a new Fabric capacity needs to be monitored, perform the following steps. T
 When a capacity is onboarded in Step 2, an Eventstream named **`Eventstream-<capacity-name>-Source`** is automatically created in the workspace. No manual Eventstream setup is required.
 
 > Verify the Eventstream is active and streaming events after onboarding.
+
+![Create](images_v2/eventstream.png)
 
 ### Step 4: Verify Data Flow
 
