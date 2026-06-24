@@ -536,41 +536,133 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 ---
 
-### Step 14: Create a High-Volume Email (HVE) Account and Store Secrets in the Key Vault
+### Step 14: Create a High Volume Email (HVE) Account and Store Secrets in Azure Key Vault
 
-The Fabric Admin Agent sends alert notification emails using a dedicated email account. Microsoft recommends using a **High Volume Email (HVE)** account for reliable delivery at scale.
+The Fabric Admin Agent sends notification emails for findings and autoscale actions. Microsoft recommends using a dedicated **High Volume Email (HVE)** account for application-based email delivery.
 
-**Create the HVE account:**
+> **Prerequisites**
+>
+> * Exchange Administrator or Global Administrator access
+> * Access to the Exchange Admin Center
+> * Approved sender email address
+> * Strong password meeting tenant requirements
+> * Billing policy configured for HVE usage
 
-**1.** Sign in to the [Microsoft 365 admin center](https://admin.microsoft.com).
+#### 14.1 Open Exchange Admin Center
 
-**2.** Go to **Users → Active users** and create a new user (e.g., `fabricadminagent-alerts@yourdomain.com`).
+1. Sign in to the Microsoft 365 Admin Portal using an administrator account.
+2. Open the **Exchange Admin Center**.
 
-**3.** Assign the user a license that includes Exchange Online (e.g., Exchange Online Plan 1 or Microsoft 365 Business Basic).
+**Screenshot Placeholder:** Exchange Admin Center Home Page
 
-**4.** Navigate to the [Exchange admin center](https://admin.exchange.microsoft.com) → **Settings → Mail flow** → **High volume email**.
+![Exchange Admin Center](images_v2/hve_step1_exchange_admin_center.png)
 
-**5.** Enable HVE for the mailbox and note down the SMTP credentials.
+---
 
-> **[Screenshot: Exchange admin center — High volume email settings with the new mailbox enabled]**
+#### 14.2 Navigate to High Volume Email
 
-<!-- > **Note:** Alternatively, you can use an existing shared mailbox or a standard Microsoft 365 account with an app password. HVE is recommended for production use to avoid throttling. -->
+1. In the Exchange Admin Center, navigate to:
 
-**Store the secrets in the Key Vault:**
+   **Mail Flow → High Volume Email**
 
-In the deployed Key Vault, create the following secrets:
+2. Open the High Volume Email management page.
 
-<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%;">
-  <thead>
-    <tr><th>Secret Name</th><th>Value</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>FabricAdminAgentEmail</code></td><td>Email address used for sending alert notifications</td></tr>
-    <tr><td><code>FabricAdminAgentEmailPassword</code></td><td>Password / App password for the notification email account</td></tr>
-  </tbody>
-</table>
+**Screenshot Placeholder:** High Volume Email Management Page
 
-![Create](images_v2/key_vault_secrets.png)
+![High Volume Email Page](images_v2/hve_step2_high_volume_email.png)
+
+---
+
+#### 14.3 Create a New HVE Account
+
+1. Click **Add an HVE account**.
+2. Enter the required account information.
+
+| Field                 | Recommended Value                           |
+| --------------------- | ------------------------------------------- |
+| Display Name          | Fabric Admin Agent                          |
+| Primary Email Address | Dedicated sender email address              |
+| Password              | Strong password meeting tenant requirements |
+| Purpose               | Fabric Admin Agent notifications            |
+
+Example:
+
+| Field                 | Example                                                                   |
+| --------------------- | ------------------------------------------------------------------------- |
+| Display Name          | Fabric Admin Agent                                                        |
+| Primary Email Address | [fabricadminagent@yourdomain.com](mailto:fabricadminagent@yourdomain.com) |
+| Purpose               | Fabric Admin Agent notifications                                          |
+
+**Screenshot Placeholder:** HVE Account Basic Information
+
+![Create HVE Account](images_v2/hve_step3_create_account.png)
+
+---
+
+#### 14.4 Select Billing Policy
+
+1. Select the appropriate HVE billing policy.
+2. Continue to the review page.
+
+**Screenshot Placeholder:** HVE Billing Policy Selection
+
+![HVE Billing Policy](images_v2/hve_step4_billing_policy.png)
+
+---
+
+#### 14.5 Review and Create the Account
+
+1. Review the account details.
+2. Click **Create**.
+3. Verify the account appears in the High Volume Email list.
+
+Record the following information for operational tracking:
+
+* Account Display Name
+* Primary Email Address
+* Application Name
+* Business Owner
+* Technical Owner
+
+**Screenshot Placeholder:** Review HVE Account
+
+![Review HVE Account](images_v2/hve_step5_review_account.png)
+
+---
+
+### HVE SMTP Configuration
+
+Use the following SMTP settings in the Fabric Admin Agent notification service:
+
+| Setting         | Value                      |
+| --------------- | -------------------------- |
+| SMTP Server     | smtp.hve.mx.microsoft      |
+| Port            | 587                        |
+| Encryption      | TLS                        |
+| Authentication  | HVE Account Credentials    |
+| Sender Address  | HVE Account Email Address  |
+| Recipient Scope | Internal Tenant Recipients |
+
+---
+
+### Store HVE Credentials in Azure Key Vault
+
+After creating the HVE account, store the credentials in the Azure Key Vault deployed during Azure resource setup.
+
+Create the following secrets:
+
+| Secret Name                   | Value                |
+| ----------------------------- | -------------------- |
+| FabricAdminAgentEmail         | HVE email address    |
+| FabricAdminAgentEmailPassword | HVE account password |
+
+**Screenshot Placeholder:** Azure Key Vault Secrets
+
+![Key Vault Secrets](images_v2/key_vault_secrets.png)
+
+
+> **Important:** The Function App Managed Identity must have the **Key Vault Secrets User** role on the Key Vault so it can retrieve these credentials at runtime.
+
 
 ---
 
