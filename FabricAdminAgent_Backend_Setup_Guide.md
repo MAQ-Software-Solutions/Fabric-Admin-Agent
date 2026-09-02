@@ -269,7 +269,7 @@ This setting allows users to discover and use unverified workloads such as Fabri
 2. Enable the setting.
 3. Apply it to the required users or security groups.
 
-![Users can see and work with additional workloads not validated by Microsoft](images_v2/additional_workloads_unvalidated.png)
+![Users can see and work with additional workloads not validated by Microsoft](images/additional_workloads_unvalidated.png)
 
 ---
 
@@ -281,7 +281,7 @@ This setting allows workspace administrators to install and manage workloads wit
 2. Enable the setting.
 3. Apply it to the required users or security groups.
 
-![Workspace admins can add and remove additional workloads](images_v2/workspace_admins_workloads.png)
+![Workspace admins can add and remove additional workloads](images/workspace_admins_workloads.png)
 
 ---
 
@@ -294,7 +294,7 @@ This setting allows capacity administrators and contributors to manage workloads
 3. Apply it to the required users or security groups.
 4. If desired, enable **Only capacity admins can add and remove workloads** to further restrict access.
 
-![Capacity admins and contributors can add and remove additional workloads](images_v2/capacity_admins_workloads.png)
+![Capacity admins and contributors can add and remove additional workloads](images/capacity_admins_workloads.png)
 
 ---
 
@@ -320,7 +320,7 @@ Once these settings are enabled, proceed with **Step 1: Verify Workspace Access*
 
 Ensure the user performing the setup has at least **Contributor** role on the Fabric workspace where the Fabric Admin Agent will be deployed.
 
-![Homepage](images_v2/workspaceaccess.png)
+![Homepage](images/workspaceaccess.png)
 
 ---
 
@@ -328,19 +328,19 @@ Ensure the user performing the setup has at least **Contributor** role on the Fa
 
 **1.** In the Fabric workspace, click the **New Item** button.
 
-![NewItem](images_v2/newitem.png)
+![NewItem](images/newitem.png)
 
 **2.** Search for **Fabric Admin Agent** and click on it.
 
-![Search](images_v2/searchFaa.png)
+![Search](images/searchFaa.png)
 
 **3.** Enter a name for the artifact and confirm creation.
 
-![Create](images_v2/createitemdialoguebox.png)
+![Create](images/createitemdialoguebox.png)
 
 The item is created in its initial state.
 
-![Create](images_v2/initialstate.png)
+![Create](images/initialstate.png)
 
 ---
 
@@ -350,7 +350,7 @@ Upon creation, a popup appears requesting permissions for the **Frontend Service
 
 **1.** Review the requested permissions in the popup.
 
-![Create](images_v2/frontendadminapproval.png)
+![Create](images/frontendadminapproval.png)
 
 **2.** Click **Request Approval** to submit the consent request.
 
@@ -365,11 +365,11 @@ The Backend app registration requires admin consent and **must be performed by**
 
 **1.** The admin navigates to the Backend app authorization screen within the workload setup.
 
-![Create](images_v2/backendappconsent.png)
+![Create](images/backendappconsent.png)
 
 **2.** The admin reviews and grants the requested API permissions.
 
-![Create](images_v2/initialstatebackendsignin.png)
+![Create](images/initialstatebackendsignin.png)
 
 > **Important:** Both the Frontend SPN approval (Step 3) and Backend app authorization (Step 4) must be completed before proceeding to Step 5.
 
@@ -381,15 +381,15 @@ Once both SPN approvals are complete:
 
 **1.** Click the **Deploy Fabric Resources** button in the workload item.
 
-![Create](images_v2/fabric_deploy.png)
+![Create](images/fabric_deploy.png)
 
 **2.** Wait for the deployment to complete. This process takes approximately **20–25 minutes**.
 
-![Create](images_v2/fabric_deployment_progress.png)
+![Create](images/fabric_deployment_progress.png)
 
 **3.** Confirm all Fabric artifacts have been successfully deployed.
 
-![Create](images_v2/fabric_deployment_complete.png)
+![Create](images/fabric_deployment_complete.png)
 
 ---
 
@@ -397,7 +397,7 @@ Once both SPN approvals are complete:
 
 **1.** Click the **Deploy Azure Resources** button.
 
-![Create](images_v2/azure_deployment_button.png)
+![Create](images/azure_deployment_button.png)
 
 **2.** Provide the following inputs when prompted:
 
@@ -413,11 +413,11 @@ Once both SPN approvals are complete:
 
 > **Note:** The user must have **Contributor** role on the target Azure Resource Group.
 
-![Create](images_v2/tenant_id_dialog_box.png)
+![Create](images/tenant_id_dialog_box.png)
 
 **3.** Confirm the deployment. This step only deploys a Key Vault.
 
-![Create](images_v2/azure_deployment_confirmation.png)
+![Create](images/azure_deployment_confirmation.png)
 
 ---
 
@@ -434,7 +434,7 @@ Once both SPN approvals are complete:
 - **PBI Connection** — Power BI service connection
 - **PowerBIDataset Connection** — dataset refresh connection
 
-![Create](images_v2/deployed_artifacts.png)
+![Create](images/deployed_artifacts.png)
 
 ---
 
@@ -446,7 +446,7 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 **2.** Click **Build your own template in the editor**, paste in the ARM template JSON from the [ARM-FunctionApp-FAA.json](https://github.com/MAQ-Software-Solutions/Fabric-Admin-Agent/blob/main/ARM-FunctionApp-FAA.json) file, and click **Save**.
 
-![Create](images_v2/custom_deployment.png)
+![Create](images/custom_deployment.png)
 
 **3.** Provide the following required input parameters:
 
@@ -462,15 +462,15 @@ A custom ARM template deployment provisions the Azure Function App used for capa
   </tbody>
 </table>
 
-![Create](images_v2/input_parameters_function_app.png)
+![Create](images/input_parameters_function_app.png)
 
 **4.** Submit the deployment. This takes approximately **2–3 minutes**.
 
-![Create](images_v2/azure_deployment_complete.png)
+![Create](images/azure_deployment_complete.png)
 
 **5.** Verify that all Azure resources have been successfully deployed.
 
-![Create](images_v2/azure_resources.png)
+![Create](images/azure_resources.png)
 
 The following resources should be visible in the Azure Resource Group:
 
@@ -491,7 +491,7 @@ The following resources should be visible in the Azure Resource Group:
 
 **3.** Under the **System assigned** tab, copy the **Object (principal) ID**.
 
-![Create](images_v2/function_app_identity.png)
+![Create](images/function_app_identity.png)
 
 ---
 
@@ -503,7 +503,7 @@ The following resources should be visible in the Azure Resource Group:
 
 **3.** Add the Function App's managed identity (using the Object ID from Step 9) with the **Contributor** role.
 
-![Create](images_v2/function_app_fabric_access.png)
+![Create](images/function_app_fabric_access.png)
 
 ---
 
@@ -520,7 +520,7 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 **3.** Add the Function App's managed identity with the required roles.
 
-![Create](images_v2/function_app_capacity_access.png)
+![Create](images/function_app_capacity_access.png)
 
 ---
 
@@ -532,7 +532,7 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 **3.** Assign the **Key Vault Secrets User** role to the Function App's managed identity.
 
-![Create](images_v2/function_app_vault_access.png)
+![Create](images/function_app_vault_access.png)
 
 ---
 
@@ -555,7 +555,7 @@ The Fabric Admin Agent sends notification emails for findings and autoscale acti
 
 **Screenshot Placeholder:** Exchange Admin Center Home Page
 
-![Exchange Admin Center](images_v2/hve_step1_exchange_admin_center.png)
+![Exchange Admin Center](images/hve_step1_exchange_admin_center.png)
 
 ---
 
@@ -569,7 +569,7 @@ The Fabric Admin Agent sends notification emails for findings and autoscale acti
 
 **Screenshot Placeholder:** High Volume Email Management Page
 
-![High Volume Email Page](images_v2/hve_step2_high_volume_email.png)
+![High Volume Email Page](images/hve_step2_high_volume_email.png)
 
 ---
 
@@ -595,7 +595,7 @@ Example:
 
 **Screenshot Placeholder:** HVE Account Basic Information
 
-![Create HVE Account](images_v2/hve_step3_create_account.png)
+![Create HVE Account](images/hve_step3_create_account.png)
 
 ---
 
@@ -606,7 +606,7 @@ Example:
 
 **Screenshot Placeholder:** HVE Billing Policy Selection
 
-![HVE Billing Policy](images_v2/hve_step4_billing_policy.png)
+![HVE Billing Policy](images/hve_step4_billing_policy.png)
 
 ---
 
@@ -626,7 +626,7 @@ Record the following information for operational tracking:
 
 **Screenshot Placeholder:** Review HVE Account
 
-![Review HVE Account](images_v2/hve_step5_review_account.png)
+![Review HVE Account](images/hve_step5_review_account.png)
 
 ---
 
@@ -658,7 +658,7 @@ Create the following secrets:
 
 **Screenshot Placeholder:** Azure Key Vault Secrets
 
-![Key Vault Secrets](images_v2/key_vault_secrets.png)
+![Key Vault Secrets](images/key_vault_secrets.png)
 
 
 > **Important:** The Function App Managed Identity must have the **Key Vault Secrets User** role on the Key Vault so it can retrieve these credentials at runtime.
@@ -674,7 +674,7 @@ Create the following secrets:
 
 **3.** Verify that all Key Vault reference settings display a **resolved** status (green checkmark).
 
-![Create](images_v2/function_app_secrets_resolved.png)
+![Create](images/function_app_secrets_resolved.png)
 
 ---
 
@@ -694,7 +694,7 @@ The PBI Service Connection is used by the Fabric Admin Agent to retrieve tenant 
 
 **2.** Locate the **PBI Service connection** (`fabricadminagent-pbi-service-admin_<identifier>`).
 
-![Create](images_v2/admin_connection_oauth.png)
+![Create](images/admin_connection_oauth.png)
 
 **3.** Edit the connection credentials and select one of the supported authentication methods.
 
@@ -714,7 +714,7 @@ The PBI Semantic Refresh Connection is used to access and refresh semantic model
 
 **5.** Locate the **PBI Semantic Refresh connection**.
 
-![Create](images_v2/semantic_model_connection.png)
+![Create](images/semantic_model_connection.png)
 
 **6.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -755,11 +755,11 @@ Enable the following tenant settings and scope them to the Security Group contai
 
 * Service principals can call Fabric public APIs
 
-![Create](images_v2/spn_fabric_rest.png)
+![Create](images/spn_fabric_rest.png)
 
 * Service principals can access read-only admin APIs
 
-![Create](images_v2/read-only-admin-apis.png)
+![Create](images/read-only-admin-apis.png)
 
 #### Fabric Permissions
 
@@ -793,7 +793,7 @@ If using Workspace Identity:
 
 **3.** Edit the KQL DB source credentials and set them to **OAuth2**.
 
-![Create](images_v2/kql_data_source_connection.png)
+![Create](images/kql_data_source_connection.png)
 
 ---
 
@@ -807,11 +807,11 @@ If using Workspace Identity:
 
 > **Note:** The user must be a **Fabric Capacity Administrator** for the respective capacity.
 
-![Create](images_v2/no_capacities.png)
+![Create](images/no_capacities.png)
 
-![Create](images_v2/onboard_capacity.png)
+![Create](images/onboard_capacity.png)
 
-![Create](images_v2/capacity_onboarded.png)
+![Create](images/capacity_onboarded.png)
 
 ---
 
@@ -838,9 +838,9 @@ For each onboarded capacity, configure the detection thresholds and notification
 
 **3.** Click **Save**.
 
-![Create](images_v2/throttling_risk.png)
+![Create](images/throttling_risk.png)
 
-![Create](images_v2/idle_capacity.png)
+![Create](images/idle_capacity.png)
 
 ---
 
@@ -862,9 +862,9 @@ For each onboarded capacity, configure the detection thresholds and notification
 
 **3.** Set a **Daily** schedule (or as required by your refresh cadence).
 
-![Create](images_v2/pipeline_parameters.png)
+![Create](images/pipeline_parameters.png)
 
-![Create](images_v2/pipeline_schedule.png)
+![Create](images/pipeline_schedule.png)
 
 ---
 
@@ -875,9 +875,9 @@ After completing all steps, confirm the system is operating correctly:
 - **Review Active Findings** tab in the Fabric Admin Agent workload should start populating with alerts once capacity events are detected and the detection logic runs.
 - **Monitoring Agent** tab will be populated after the pipeline refresh completes successfully.
 
-![Create](images_v2/capacity_monitoring_agent.png)
+![Create](images/capacity_monitoring_agent.png)
 
-![Create](images_v2/review_findings_tab.png)
+![Create](images/review_findings_tab.png)
 
 ---
 
@@ -908,7 +908,7 @@ When a capacity is onboarded in Step 2, an Eventstream named **`Eventstream-<cap
 
 > Verify the Eventstream is active and streaming events after onboarding.
 
-![Create](images_v2/eventstream.png)
+![Create](images/eventstream.png)
 
 ### Step 4: Verify Data Flow
 
