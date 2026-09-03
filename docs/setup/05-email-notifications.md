@@ -1,6 +1,6 @@
 # 05 — Email Notifications (HVE Account & Key Vault Secrets)
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Permissions](./04-permissions.md)*
+*Previous: [Permissions](./04-permissions.md)*
 
 The Fabric Admin Agent sends notification emails for findings and autoscale actions. Microsoft recommends using a dedicated **High Volume Email (HVE)** account for application-based email delivery.
 

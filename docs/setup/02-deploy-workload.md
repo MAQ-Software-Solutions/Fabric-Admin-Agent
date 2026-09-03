@@ -1,6 +1,6 @@
 # 02 — Deploy the Workload
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Tenant Settings](./01-tenant-settings.md)*
+*Previous: [Tenant Settings](./01-tenant-settings.md)*
 
 ---
 

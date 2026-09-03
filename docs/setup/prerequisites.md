@@ -1,7 +1,5 @@
 # Prerequisites
 
-*Part of the [Fabric Admin Agent Setup Guide](./01-tenant-settings.md)*
-
 > **Important:** All prerequisites below must be met before starting the setup steps. Missing any item will cause failures during Eventstream creation or notebook execution.
 
 Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is installed and its semantic model is refreshing. Note down the **Workspace Name** and **Semantic Model Name** — these are required later when configuring capacity monitoring.
@@ -14,7 +12,7 @@ Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is in
 |---|---|---|
 | Contributor (minimum) | Fabric Workspace (Admin Agent WS) | Required to create the Fabric Admin Agent workload item and deploy all Fabric artifacts |
 | Capacity Administrator | Microsoft Fabric (per capacity) | Required to read Capacity Overview Events via Eventstream and to add capacities in the workload Configuration tab; must be assigned for every capacity being monitored |
-| Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator | Microsoft Entra ID (tenant level) | Required to grant admin consent for the Backend Service Principal during initial workload setup |
+| Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator | Microsoft Entra ID (tenant level) | Required to grant admin consent for the Frontend and Backend Service Principal during initial workload setup |
 | Fabric Administrator or Global Administrator (with Tenant.Read.All or Tenant.ReadWrite.All) | Microsoft Fabric / Power BI | Required to authorize the PBI Service connection in Manage Connections and Gateways |
 
 ---

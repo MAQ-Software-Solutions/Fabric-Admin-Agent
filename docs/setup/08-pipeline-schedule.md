@@ -1,6 +1,6 @@
-# 07 — Pipeline & Notebook Scheduling
+# 08 — Pipeline & Notebook Scheduling
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Connections](./06-connections.md)*
+*Previous: [Azure Open AI Setup](./07-azure-openai-api-key.md)*
 
 ---
 
@@ -10,7 +10,7 @@
 
 **2.** Provide the required value for `AZURE_OPENAI_ENDPOINT` in the Default value set.
 
-> **⚠ Screenshot pending** for this step in the source material.
+![Create](../assets/images/setup/variable_library_openai_key.png)
 
 ---
 
@@ -35,8 +35,10 @@
 
 **4.** Set a **Daily** schedule (or as required by your refresh cadence).
 
-> **⚠ Screenshots pending** for the notebook and pipeline schedule dialogs in the source material.
+![Create](../assets/images/setup/fsku_schedule_weekly_notebook_schedule.png)
+
+![Create](../assets/images/setup/ai_insights_pipeline_daily_schedule.png)
 
 ---
 
-**Next:** [Verify Deployment →](./08-verify-deployment.md)
+**Next:** [Verify Deployment →](./09-verify-deployment.md)

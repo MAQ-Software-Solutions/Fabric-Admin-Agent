@@ -1,6 +1,6 @@
 # 06 — Connections (OAuth2 / SPN / Workspace Identity)
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Email Notifications](./05-email-notifications.md)*
+*Previous: [Email Notifications](./05-email-notifications.md)*
 
 The Fabric Admin Agent supports multiple authentication methods for its Fabric connections. Configure the authentication method that best aligns with your organization's security and governance requirements.
 
@@ -46,7 +46,7 @@ Used by the semantic model to access and query the Eventhouse/KQL Database that 
 
 **8.** Locate the **Azure Data Explorer (Kusto) connection** (`fabricadminagent-kql-connection_<identifier>`).
 
-> **⚠ Screenshot pending** for this connection in the source material.
+![Create](../assets/images/setup/kql_db_connection.png)
 
 **9.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -58,7 +58,7 @@ Used by the semantic model to access the lakehouse SQL endpoint and execute quer
 
 **11.** Locate the **SQL Server connection** (`fabricadminagent-lakehouse-sql-endpoint_<identifier>`).
 
-> **⚠ Screenshot pending** for this connection in the source material.
+![Create](../assets/images/setup/lakehouse_sql_endpoint.png)
 
 **12.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -127,4 +127,4 @@ If using Workspace Identity:
 
 ---
 
-**Next:** [Pipeline Scheduling →](./07-pipeline-schedule.md)
+**Next:** [Azure Open AI Setup →](./07-azure-openai-api-key.md)

@@ -1,7 +1,5 @@
 # Detection Logic
 
-> **Status:** Idle Capacity and Throttling Risk are now fully documented from the actual KQL schema (`DatabaseSchema.kql` — all tables, functions, the materialized view, and update policies for the `FabricAdminAgentLogs` KQL database). The three Batch Insights recommendation types (Capacity Scaling, F-SKU Schedule, Workspace Reallocation) still run from notebooks outside this schema — see "Open Items."
-
 ## Detection Scenarios
 
 The real-time detection layer (see [01-overview.md](01-overview.md), [02-data-flow.md](02-data-flow.md)) currently evaluates two core capacity health scenarios against streaming Capacity Overview Events:

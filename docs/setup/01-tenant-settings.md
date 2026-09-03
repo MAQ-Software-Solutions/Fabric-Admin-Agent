@@ -1,6 +1,6 @@
 # 01 — Tenant Settings & Workspace Access
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Prerequisites](./prerequisites.md)*
+*Previous: [Prerequisites](./prerequisites.md)*
 
 Perform all steps in this guide once per environment deployment. Each step is a dependency for the next.
 

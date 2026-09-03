@@ -1,6 +1,6 @@
 # 04 — Permissions (Managed Identity Role Grants)
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Deploy Azure Resources](./03-deploy-azure.md)*
+*Previous: [Deploy Azure Resources](./03-deploy-azure.md)*
 
 The Function App and Automation Account each use a **System Assigned Managed Identity**. This section grants those identities the Fabric, Azure, and Power BI permissions they need to operate.
 
@@ -60,9 +60,15 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 ---
 
-## Step 14: Add the Automation Account's Managed Identity to the "Allow service principals to use Power BI APIs" Security Group
+## Step 14: Add the Automation Account's Managed Identity to the "Allow service principals to use Fabric APIs" Security Group
 
-> **⚠ Incomplete in source material.** The detailed sub-steps for this grant were not filled in in the original setup guide and still need to be documented (a screenshot placeholder was also left blank). Until this is completed here, follow your organization's standard process for adding a service principal to a Microsoft Entra security group that is scoped to the Fabric tenant setting **Allow service principals to use Power BI APIs**, then confirm the Automation Account's managed identity is a member.
+**1.** Navigate to **Microsoft Fabric Admin Portal**
+
+**2.** Search for the **Allow service principals to use Fabric APIs** setting.
+
+**3.** Open the associated Security Group and add the Automation Account's Managed Identity as a member.
+
+![Create](../assets/images/setup/function_app_vault_access.png)
 
 ---
 

@@ -1,6 +1,6 @@
 # 03 — Deploy Azure Resources
 
-*Part of the [Fabric Admin Agent Setup Guide](./prerequisites.md) · Previous: [Deploy the Workload](./02-deploy-workload.md)*
+*Previous: [Deploy the Workload](./02-deploy-workload.md)*
 
 ---
 
