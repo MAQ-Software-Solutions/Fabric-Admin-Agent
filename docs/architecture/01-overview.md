@@ -2,7 +2,7 @@
 
 The Fabric Admin Agent is a real-time capacity monitoring and optimization solution built on the Microsoft Fabric Workload Extensibility Toolkit. It ingests live Fabric Capacity Overview Events, evaluates capacity health continuously, and combines that with historical Capacity Metrics App data to surface findings, recommendations, and automated scaling/scheduling actions to Fabric administrators.
 
-This page describes the six architectural layers and the two-tenant deployment model. For the event/request flow between components, see [data-flow.md](data-flow.md). For the full list of deployed Fabric artifacts, see [fabric-artifacts.md](fabric-artifacts.md). For Azure-side components, see [04-azure-components.md](04-azure-components.md).
+This page describes the six architectural layers and the two-tenant deployment model. For the event/request flow between components, see [02-data-flow.md](02-data-flow.md). For the full list of deployed Fabric artifacts, see [03-fabric-artifacts.md](03-fabric-artifacts.md). For Azure-side components, see [04-azure-components.md](04-azure-components.md).
 
 ## The Six Layers
 
