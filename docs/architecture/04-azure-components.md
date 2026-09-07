@@ -6,12 +6,12 @@ The Azure-side resources are deployed in two stages during one-time infrastructu
 
 | Resource | Configuration / Deployment | Purpose |
 |---|---|---|
-| Azure Function App | Deployed via the custom ARM template (`ARM-FunctionApp-FAA.json`) | Hosts APIs for capacity operations, notification services, and automation workflows |
+| Azure Function App | Deployed via the [custom ARM template](../../deploy/ARM-FunctionApp-FAA.json) (`ARM-FunctionApp-FAA.json`) | Hosts APIs for capacity operations, notification services, and automation workflows |
 | App Service Plan | Created during custom deployment | Provides compute for the Function App |
 | Azure Storage Account | Created during custom deployment | Storage required by the Function App runtime and application operations |
 | Log Analytics Workspace | Created during custom deployment | Stores operational logs, diagnostics, and monitoring telemetry for the Function App |
 | Application Insights | Created during custom deployment | Application monitoring, tracing, performance metrics, and diagnostics for the Function App |
-| Azure Key Vault | Created via the automated deployment; requires **Key Vault Administrator** during setup | Stores HVE (High Volume Email) account credentials and other runtime secrets |
+| Azure Key Vault | Created via the automated deployment; requires **Key Vault Administrator** during setup | Stores HVE (High Volume Email) account credentials and the Azure OpenAI API key used for AI Insights |
 | Application Insights Smart Detection | Auto-created by Azure Monitor | Detects application failures, performance anomalies, and operational issues |
 | Action Group | Auto-created by Azure Monitor | Routes Smart Detection alert rule notifications |
 | Azure Automation Account | Created via the automated deployment | Hosts runbooks, schedules, and a managed identity for scheduled capacity operations |
@@ -46,8 +46,8 @@ The following secrets must exist in the Key Vault, using these exact names:
 
 - `FabricAdminAgentEmail`
 - `FabricAdminAgentEmailPassword`
-- `AZURE-OPENAI-API-KEY`
+- `AZURE-OPENAI-API-KEY` (used by AI Insights)
 
 ## Related: ISV-Side Storage
 
-Separately from the customer-tenant Azure resources above, the ISV tenant (MAQ Software) hosts an **Azure Table Storage** account (the "ISV Config Store") that maps each customer tenant/item to its KQL DB connection string and database name. This is authenticated by the backend using a dedicated service-principal client secret, not a managed identity, since it lives outside the customer tenant. See the backend's `IsvTableStorageProvider` for implementation details.
+Separately from the customer-tenant Azure resources above, the ISV tenant (MAQ Software) hosts an **Azure Table Storage** account (the "ISV Config Store") that maps each customer tenant/item to its KQL DB connection string and database name.

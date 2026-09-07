@@ -10,6 +10,7 @@ The real-time detection layer (see [01-overview.md](01-overview.md), [02-data-fl
 Batch Insights (see [02-data-flow.md](02-data-flow.md)) adds three longer-horizon, historically-driven recommendation types, generated from Capacity Metrics App and Capacity Overview Event data rather than real-time streaming:
 
 - **Capacity Scaling Recommendations** — SKU upgrade/downgrade/right-sizing suggestions based on historical usage trends.
+- **Throttling Recommendations** — recommendations to address sustained throttling risk based on historical utilization and throttling trends.
 - **F-SKU Schedule Recommendations** — optimal pause/resume schedules for eligible capacities.
 - **Workspace Reallocation Recommendations** — redistributing workspaces across capacities to reduce contention.
 
@@ -29,7 +30,7 @@ Both real-time scenarios run as a chain of KQL **update policies** — each tabl
 | `IdleLoadFindings_RT` | `DeduplicateIdleLoad()` | `IdleLoadFindings_Deduped` | No |
 | `IdleLoadFindings_Deduped` | `ProcessNewIdleLoad()` | `FabricFindingsAlerts` | No |
 
-`FabricCapacityEvents` itself has streaming ingestion disabled (batched instead), and `FabricFindingsAlerts` has a 30-day soft-delete retention policy so expired/superseded findings remain recoverable for a month.
+`FabricCapacityEvents` itself has streaming ingestion disabled (batched instead), and `FabricFindingsAlerts` has a 365-day soft-delete retention policy so expired/superseded findings remain recoverable for one year.
 
 `CalculateCapacityUtilization()` parses the raw `data` JSON off each Capacity Overview Event, derives `TotalCapacityMs = <SKU number> × 30 × 1000` and `CUPercentage`, discards any row where `CUPercentage > 500` as a data-quality outlier, and only ingests events past the capacity's last processed window (`WindowStartTime >= LatestWindowEnd`) — this is what keeps `CapacityUtilization` append-only and gap-free per capacity.
 
@@ -132,8 +133,6 @@ The specific condition(s) that fired are recorded in a `TriggeredBy` string (e.g
 **Sessions:** consecutive triggered windows for the same capacity/SKU are merged into a session if the gap is ≤ 5 minutes (`sessionGapMins`); a larger gap or a SKU change starts a new session. Sessions are further chained to a prior session (extending `TrueSessionStart` backward) if the gap from the prior session's end is ≤ 5 minutes and that prior session wasn't `Suppressed` or `Approved`.
 
 **Suppression:** as with Idle Capacity, capacities with an active `SuppressAlertsUntil` (`SettingTypeId = 6`) are excluded before any session logic runs.
-
-> **Note:** `debtGuardrailThreshold = 0.8` is declared at the top of `ComputeUpsizeDecision()`, but a search across the full schema confirms it is never referenced again anywhere — this is dead code, not logic implemented elsewhere. Worth removing or wiring up, but no longer a documentation gap.
 
 ### From Decision to Finding
 

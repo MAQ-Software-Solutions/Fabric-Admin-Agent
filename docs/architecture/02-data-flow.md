@@ -19,7 +19,7 @@ This page traces how data and requests move through the Fabric Admin Agent, from
    - `FabricAdminAgent_WorkloadAllocation` — workspace distribution → reallocation recommendations
    - `FabricAdminAgent_FSKURecommendation` — F-SKU pause/resume schedule recommendations (runs on its own weekly schedule, independent of the pipeline above)
    - `FabricAdminAgent_FabricFindings` — aggregates the notebook outputs, enriches with capacity metadata, and prepares final recommendation records
-3. Final recommendations are written to the `FabricAdminAgentLogs` KQL database and surfaced in the **Capacity Monitoring Agent** tab and the **Review Active Findings** tab of the workload UI.
+3. Final recommendations are written to the `FabricAdminAgentLogs` KQL database and surfaced in the **Review Active Findings** tab of the workload UI.
 
 ## Request & Auth Flow
 
@@ -38,4 +38,4 @@ The cluster URI the backend targets in step 4 is looked up per tenant/item from 
 2. The **Function App** and **Automation Account runbooks** read these schedule definitions and, at the configured times, call the Fabric APIs (via their own system-assigned Managed Identities) to pause, resume, or scale the target Fabric Capacity.
 3. Scaling and schedule outcomes (and any resulting notifications) are logged back to `FabricAdminAgentLogs`.
 
-> **Note:** When a capacity is turned off, its Eventstream also turns off automatically and must be manually re-enabled once the capacity is back on — see the Disclaimer section of the Setup Guide.
+> **Note:** When a capacity is turned off, its Eventstream also turns off automatically and must be manually re-enabled once the capacity is back on. See [Known limitations](../operations/known-limitations.md) for this and other documented issues.

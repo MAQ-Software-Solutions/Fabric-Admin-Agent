@@ -49,5 +49,5 @@ Hosts the Fabric workload and Azure automation resources deployed per customer:
 
 - [02-data-flow.md](02-data-flow.md) — the numbered request/auth flow and the real-time vs. batch data paths
 - [03-fabric-artifacts.md](03-fabric-artifacts.md) — full table of deployed Fabric notebooks, pipelines, models, and connections
-- [04-azure-components.md](04-04-azure-components.md) — Function App, Key Vault, Application Insights, Log Analytics, Automation Account
+- [04-azure-components.md](04-azure-components.md) — Function App, Key Vault, Application Insights, Log Analytics, Automation Account
 - [05-detection-logic.md](05-detection-logic.md) — sensitivity and finding-suppression configuration
