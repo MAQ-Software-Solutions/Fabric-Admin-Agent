@@ -41,9 +41,12 @@ Before deploying the Function App, gather the Fabric artifact details produced i
 - **PBI Connection** — Web v2 Power BI service connection
 - **PowerBIDataset Connection** — Power BI Semantic Model connection
 - **KQL Connection** — Azure Data Explorer (Kusto) connection
+- **KQL Database** — `FabricAdminAgentLogs` database that stores capacity events and utilization data
 - **SQL Connection** — SQL Server connection
 
 ![Create](../assets/images/setup/deployed_artifacts.png)
+
+**4.** The KQL Database URI is not shown in the **Deployed Artifacts** list. Open the deployed `FabricAdminAgentLogs` Eventhouse, select its KQL Database, open the database details, and copy the **Query URI**. Record this URI and the KQL Database name for Step 9.
 
 ---
 
@@ -53,7 +56,7 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 **1.** In the Azure Portal, navigate to **Deploy a custom template** (search for "Deploy a custom template" in the search bar, or go to [portal.azure.com/#create/Microsoft.Template](https://portal.azure.com/#create/Microsoft.Template)).
 
-**2.** Click **Build your own template in the editor**, paste in the ARM template JSON from [`deploy/arm/ARM-FunctionApp-FAA.json`](../../deploy/arm/ARM-FunctionApp-FAA.json), and click **Save**.
+**2.** Click **Build your own template in the editor**, paste in the ARM template JSON from [`deploy/ARM-FunctionApp-FAA.json`](../../deploy/ARM-FunctionApp-FAA.json), and click **Save**.
 
 ![Create](../assets/images/setup/custom_deployment.png)
 

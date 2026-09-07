@@ -66,7 +66,7 @@ Once both SPN approvals are complete:
 
 ![Create](../assets/images/setup/fabric_deployment_progress.png)
 
-**3.** Confirm all Fabric artifacts have been successfully deployed. See [Fabric Artifacts reference](../reference/kql-tables.md) for the full list of items this deploys (Lakehouse, notebooks, pipelines, semantic model, report, KQL database, connections, etc.).
+**3.** Confirm all Fabric artifacts have been successfully deployed. See [Fabric Artifacts reference](../architecture/03-fabric-artifacts.md) for the full list of items this deploys (Lakehouse, notebooks, pipelines, semantic model, report, KQL database, connections, etc.).
 
 ![Create](../assets/images/setup/fabric_deployment_complete.png)
 

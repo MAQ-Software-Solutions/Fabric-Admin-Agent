@@ -1,6 +1,6 @@
 # 05 — Email Notifications (HVE Account & Key Vault Secrets)
 
-*Previous: [Permissions](./04-permissions.md)*
+*Previous: [Azure Open AI Setup](./07-azure-openai-api-key.md)*
 
 The Fabric Admin Agent sends notification emails for findings and autoscale actions. Microsoft recommends using a dedicated **High Volume Email (HVE)** account for application-based email delivery.
 
@@ -10,10 +10,11 @@ The Fabric Admin Agent sends notification emails for findings and autoscale acti
 > - Approved sender email address
 > - Strong password meeting tenant requirements
 > - Billing policy configured for HVE usage
+> - Azure OpenAI API key stored in the deployed Key Vault; see [Azure Open AI Setup →](./07-azure-openai-api-key.md)
 
 ---
 
-## Step 15: Create a High Volume Email (HVE) Account
+## Step 16: Create a High Volume Email (HVE) Account
 
 ### 15.1 Open Exchange Admin Center
 1. Sign in to the Microsoft 365 Admin Portal using an administrator account.
@@ -83,9 +84,9 @@ Use the following SMTP settings in the Fabric Admin Agent notification service:
 
 ---
 
-## Store HVE and OpenAI Credentials in Azure Key Vault
+## Store HVE Credentials in Azure Key Vault
 
-After creating the HVE account, store the credentials in the Azure Key Vault deployed during Azure resource setup.
+After creating the HVE account, store its credentials in the Azure Key Vault deployed during Azure resource setup. The Azure OpenAI API key is stored separately in [Azure Open AI Setup](./07-azure-openai-api-key.md).
 
 Create the following secrets:
 
@@ -93,7 +94,6 @@ Create the following secrets:
 |---|---|
 | FabricAdminAgentEmail | HVE email address |
 | FabricAdminAgentEmailPassword | HVE account password |
-| AZURE-OPENAI-API-KEY | Azure OpenAI API Key |
 
 ![Key Vault Secrets](../assets/images/setup/key_vault_secrets.png)
 
@@ -101,7 +101,7 @@ Create the following secrets:
 
 ---
 
-## Step 16: Verify Function App Configuration
+## Step 17: Verify Function App Configuration
 
 **1.** In the Azure Portal, navigate to the deployed **Function App**.
 
@@ -113,4 +113,4 @@ Create the following secrets:
 
 ---
 
-**Next:** [Connections →](./06-connections.md)
+**Next:** [Pipeline & Notebook Scheduling →](./08-pipeline-schedule.md)

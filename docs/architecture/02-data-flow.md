@@ -19,7 +19,7 @@ This page traces how data and requests move through the Fabric Admin Agent, from
    - `FabricAdminAgent_WorkloadAllocation` — workspace distribution → reallocation recommendations
    - `FabricAdminAgent_FSKURecommendation` — F-SKU pause/resume schedule recommendations (runs on its own weekly schedule, independent of the pipeline above)
    - `FabricAdminAgent_FabricFindings` — aggregates the notebook outputs, enriches with capacity metadata, and prepares final recommendation records
-3. Final recommendations are written to the `FabricAdminAgentLogs` KQL database and surfaced in the **Monitoring Agent** tab and the **AI Recommendation** / **F-SKU Schedule Recommendation** sections of the workload UI.
+3. Final recommendations are written to the `FabricAdminAgentLogs` KQL database and surfaced in the **Capacity Monitoring Agent** tab and the **Review Active Findings** tab of the workload UI.
 
 ## Request & Auth Flow
 

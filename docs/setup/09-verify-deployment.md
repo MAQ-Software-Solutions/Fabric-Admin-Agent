@@ -1,10 +1,10 @@
 # 09 — Verify Deployment
 
-*Previous: [Pipeline Scheduling](./08-pipeline-schedule.md)*
+*Previous: [Pipeline & Notebook Scheduling](./08-pipeline-schedule.md)*
 
 ---
 
-## Step 22: Verify Setup
+## Step 21: Verify Setup
 
 After completing all steps in this guide, confirm the system is operating correctly:
 
@@ -20,9 +20,9 @@ After completing all steps in this guide, confirm the system is operating correc
 
 One-time infrastructure setup is now complete. To start monitoring a Fabric capacity, continue with:
 
-- **Onboarding a new capacity** (assigning capacity admin role, adding the capacity, verifying data flow, configuring findings and thresholds) — *docs/operations/onboard-a-capacity.md* (not yet created)
-- **Configuring findings, autoscaling, and notifications** — *docs/operations/configure-findings.md* (not yet created)
+- **Onboarding a new capacity** (assigning capacity admin role, adding the capacity, verifying data flow, configuring findings and thresholds) — [Onboarding a new capacity](../operations/onboard-a-capacity.md)
+- **Configuring findings, autoscaling, and notifications** — [Configuring findings, autoscaling, and notifications](../operations/configure-findings.md)
 
 ---
 
-*Previous in this guide:* [Prerequisites](./prerequisites.md) → [01 Tenant Settings](./01-tenant-settings.md) → [02 Deploy Workload](./02-deploy-workload.md) → [03 Deploy Azure](./03-deploy-azure.md) → [04 Permissions](./04-permissions.md) → [05 Email Notifications](./05-email-notifications.md) → [06 Connections](./06-connections.md) → [07 Azure Open AI Setup](./08-azure-openai-api-key.md) → [08 Pipeline Schedule](./08-pipeline-schedule.md) → **09 Verify Deployment**
+*Previous in this guide:* [Prerequisites](./prerequisites.md) → [01 Tenant Settings](./01-tenant-settings.md) → [02 Deploy Workload](./02-deploy-workload.md) → [03 Deploy Azure](./03-deploy-azure.md) → [04 Permissions](./04-permissions.md) → [07 Azure Open AI Setup](./07-azure-openai-api-key.md) → [05 Email Notifications](./05-email-notifications.md) → [08 Pipeline Schedule](./08-pipeline-schedule.md) → **09 Verify Deployment**

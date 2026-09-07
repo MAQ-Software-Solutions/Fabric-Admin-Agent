@@ -4,6 +4,8 @@
 
 The Function App and Automation Account each use a **System Assigned Managed Identity**. This section grants those identities the Fabric, Azure, and Power BI permissions they need to operate.
 
+> **Required access:** The user performing these steps must have the **Owner**, **User Access Administrator**, or an equivalent role at the relevant scope so they can grant the required workspace, capacity, and Key Vault access.
+
 ---
 
 ## Step 10: Copy the Function App and Automation Account Managed Identity
@@ -67,8 +69,6 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 **2.** Search for the **Allow service principals to use Fabric APIs** setting.
 
 **3.** Open the associated Security Group and add the Automation Account's Managed Identity as a member.
-
-![Create](../assets/images/setup/function_app_vault_access.png)
 
 ---
 
