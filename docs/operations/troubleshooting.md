@@ -1,6 +1,6 @@
 # Troubleshooting
 
-## Scenario 1: Data is not being loaded into the report
+## Scenario 1: Data is not being loaded into the report in Capacity Monitoring Agent tab
 **Debugging Steps:**
 * Verify whether the `FabricAdminAgent_LoadCapacityMetricsData` pipeline has run successfully. If the pipeline fails, check whether the connections configured in the `FabricAdminAgent_FetchWorkspacesPipeline` and `FabricAdminAgent_FetchCapacitiesPipeline` pipelines have the required permissions and access.
 * Verify whether the semantic model has been refreshed successfully. If the refresh fails, check cloud connections, and data source credentials.
@@ -16,14 +16,15 @@
 * Verify the associated Eventstream and ensure that its destination is active.
 * Check whether the capacity utilization is within an appropriate range and whether there is sufficient workload activity to trigger a scale-up or scale-down recommendation.
 
-## Scenario 3: Autoscale action is not executed even though Auto Scale is active
+## Scenario 3: Autoscale action is not executed even though Auto Scale schedule is active
 **Debugging Steps:**
 * Verify that the managed identity of the Function app has the required read and write access roles and permissions on that Fabric capacity in the Azure portal.
 * Verify the managed identity of the Function app has at least the Contributor role on the Fabric workspace where the Fabric Admin Agent item is setup.
+* Verify the managed identity has the Key Vault Secrets User role on the deployed Key vault.
 
 ## Scenario 4: Eventstream for a capacity is not functioning
 **Debugging Steps:**
-* Navigate to **Settings → Capacities** and offboard the respective capacity from the workload.
+* Navigate to **Configuration → Capacities** and offboard the respective capacity from the workload.
 * Once the capacity has been offboarded, onboard it again.
 * Re-onboarding the capacity will provision a new functional Eventstream with the same name and remove the previously deployed Eventstream.
 
