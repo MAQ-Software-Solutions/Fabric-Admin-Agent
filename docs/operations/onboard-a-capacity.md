@@ -29,3 +29,13 @@ After onboarding, confirm the following:
 * Eventstream is active and streaming events.
 * `FabricCapacityEvents` table in KQL DB is receiving rows.
 * Detection notebooks are picking up data for the new capacity on the next scheduled run.
+
+---
+
+## Onboarding Parameters & Why Configure Them
+
+| Parameter | Required / Optional | Why Configure or Adjust This Setting? |
+|---|---|---|
+| **Fabric Capacity URL** | **Required** | Uniquely identifies the Azure Fabric Capacity resource and maps its Capacity GUID. This URL is required to automatically bind the Eventstream to the capacity's Capacity Overview Events feed and enables the Azure Function App and Automation Runbooks to execute automated scaling, pause, and resume actions via the Fabric REST API. |
+| **Capacity Metrics App Dataset URL** | **Optional** *(Can be added later)* | Links the capacity to item-level historical metrics from the official Microsoft Fabric Capacity Metrics App. While real-time Eventstream monitoring and throttling alerts function immediately without this URL, providing it is required to unlock **historical AI batch insights** (such as F-SKU schedule recommendations, weekly capacity sizing trends, and workspace reallocation). |
+| **Offboarding & Re-onboarding** | Operational Action | If an Eventstream encounters orphaned event bindings, connectivity drops after a capacity pause, or tenant role changes, offboarding the capacity from the workload and re-onboarding it automatically tears down the old Eventstream and provisions a fresh, healthy Eventstream with the correct bindings. |

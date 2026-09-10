@@ -34,7 +34,7 @@ Upon creation, a popup appears requesting permissions for the **Frontend Service
 
 **2.** Click **Request Approval** to submit the consent request.
 
-> **Note:** Approval must be granted by a user with one of the admin roles listed in [Prerequisites → Fabric Roles](./prerequisites.md#fabric-roles) (Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator).
+> **Note:** Approval must be granted by a user with one of the admin roles listed in [Prerequisites → Required Roles & Permissions](./prerequisites.md#required-roles--permissions) (Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator).
 
 ---
 

@@ -6,18 +6,25 @@ Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is in
 
 ---
 
-## Fabric Roles
+## Required Roles & Permissions
+
+The following table summarizes all the roles and permissions required across Microsoft Fabric, Microsoft Entra ID, Azure, and Microsoft 365 throughout the entire deployment and onboarding lifecycle.
 
 | Role / Permission | Where | Why It Is Needed |
 |---|---|---|
-| Contributor (minimum) | Fabric Workspace (Admin Agent WS) | Required to create the Fabric Admin Agent workload item and deploy all Fabric artifacts |
-| Capacity Administrator | Microsoft Fabric (per capacity) | Required to read Capacity Overview Events via Eventstream and to add capacities in the workload Configuration tab; must be assigned for every capacity being monitored |
-| Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator | Microsoft Entra ID (tenant level) | Required to grant admin consent for the Frontend and Backend Service Principal during initial workload setup |
-| Fabric Administrator or Global Administrator (with Tenant.Read.All or Tenant.ReadWrite.All) | Microsoft Fabric / Power BI | Required to authorize the PBI Service connection in Manage Connections and Gateways |
+| **Contributor (minimum)** | Fabric Workspace (Admin Agent WS) | Required to create the Fabric Admin Agent workload item, deploy all Fabric artifacts (Lakehouse, KQL DB, notebooks, pipelines), and configure schedules. *(Note: **Workspace Admin** is required to grant workspace access to Managed Identities in Step 11).* |
+| **Capacity Administrator** | Microsoft Fabric (per capacity) | Required to read Capacity Overview Events via Eventstream, onboard capacities in the workload Configuration tab, and grant capacity read/write access to Managed Identities. Must be assigned for every capacity being monitored. |
+| **Global Administrator, Privileged Role Administrator, Application Administrator, or Cloud Application Administrator** | Microsoft Entra ID (tenant level) | Required to grant tenant-wide admin consent for the Frontend Service Principal (Step 4) and Backend Service Principal (Step 5) during initial workload setup. |
+| **Fabric Administrator or Global Administrator** (with `Tenant.Read.All` or `Tenant.ReadWrite.All`) | Microsoft Fabric / Power BI | Required to enable tenant settings for additional workloads (Step 1), authorize the PBI Service connection in Manage Connections and Gateways, and add the Automation Account identity to the Fabric API security group (Step 14). |
+| **Contributor (or higher)** | Target Azure Resource Group | Required to deploy the Azure Function App, App Service Plan, Azure Storage Account, Log Analytics Workspace, Application Insights, Key Vault, Automation Account, and Runbooks. |
+| **Key Vault Administrator** (or equivalent permissions to create and manage secrets) | Azure Key Vault | Required to configure Key Vault, create secrets (HVE email credentials, Azure OpenAI API key), and manage access policies. |
+| **Owner or User Access Administrator** | Target Azure Resource Group / Key Vault | Required to assign Azure RBAC roles (such as `Key Vault Secrets User`) to the Function App and Automation Account System Assigned Managed Identities (Step 13). |
+| **Exchange Administrator or Global Administrator** *(Conditional)* | Microsoft 365 / Exchange Admin Center | Required to create the High Volume Email (HVE) account and assign billing policies if automated email notifications are enabled (Step 16). |
+| **Cognitive Services OpenAI Contributor / Reader** *(Conditional)* | Azure OpenAI Resource | Required to view and retrieve the Azure OpenAI Endpoint and API keys to store in Key Vault if AI Insights and recommendations are enabled (Step 15 & 18). |
 
 ---
 
-## Azure Resources
+## Azure Resources Overview
 
 | Resource | Configuration / Required Permission | Purpose |
 |---|---|---|
@@ -26,7 +33,7 @@ Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is in
 | Azure Storage Account | Created during custom deployment | Provides storage required by the Azure Function App runtime and application operations |
 | Log Analytics Workspace | Created during custom deployment | Stores operational logs, diagnostics, and monitoring telemetry for the function app |
 | Application Insights | Created during custom deployment | Provides application monitoring, tracing, performance metrics, and diagnostics for the function app |
-| Azure Key Vault | User must have **Key Vault Administrator** role during setup | Stores HVE (High Volume Email) account credentials |
+| Azure Key Vault | User must have **Key Vault Administrator** role during setup | Stores HVE (High Volume Email) account credentials and Azure OpenAI keys |
 | Application Insights Smart Detection | Automatically created by Azure Monitor | Detects application failures, performance anomalies, and operational issues |
 | Action Group | Automatically created by Azure Monitor | Used by Smart Detection alert rules to generate and route alert notifications |
 | Azure Automation Account | Created during Azure Resource Deployment | Hosts runbooks, schedules, and managed identities for scheduled capacity operations |
@@ -50,12 +57,6 @@ Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is in
 - Application Insights Smart Detection
 - Smart Detector Alert Rule (Failure Anomalies)
 - Action Group
-
-### Minimum Azure Permissions Required
-
-The user or deployment Service Principal performing the setup must have:
-- **Contributor** (or higher) on the target Azure Resource Group.
-- **Key Vault Administrator** (or equivalent permissions to create and manage secrets) on the Azure Key Vault.
 
 > **Note:** No Azure RBAC permissions on the Microsoft Fabric Capacity Azure resource are required solely for Capacity Overview Event ingestion. Fabric capacity permissions are documented below.
 
