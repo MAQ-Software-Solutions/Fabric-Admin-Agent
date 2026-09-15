@@ -1,8 +1,8 @@
-# 07 — Azure Open AI Setup
+# 06 — Azure Open AI Setup
 
-*Previous: [Permissions](./04-permissions.md)*
+*Previous: [Connections](./05-connections.md)*
 
-## Step 15: Get and Store the Azure OpenAI API Key
+## Step 16: Get and Store the Azure OpenAI API Key
 
 **1.** In the Azure Portal, open the deployed Azure OpenAI resource.
 
@@ -12,6 +12,6 @@
 
 > **Important:** The user configuring the pipeline and notebook schedules must have the **Key Vault Secrets User** role on the deployed Key Vault. See [Permissions → Step 13](./04-permissions.md#step-13-grant-key-vault-secrets-user-role-to-the-function-app-and-automation-account).
 
-![Key Vault Secrets](../assets/images/setup/key_vault_secrets.png)
+![Key Vault Secrets](../assets/images/setup/key_vault_openai.png)
 ---
-**Next:** [Email & Notifications →](./05-email-notifications.md)
+**Next:** [Email & Notifications →](./07-email-notifications.md)

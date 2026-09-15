@@ -1,10 +1,10 @@
 # 08 — Pipeline & Notebook Scheduling
 
-*Previous: [Email & Notifications](./05-email-notifications.md)*
+*Previous: [Email & Notifications](./07-email-notifications.md)*
 
 ---
 
-## Step 18: Provide the AZURE_OPENAI_ENDPOINT in the Variable Library
+## Step 19: Provide the AZURE_OPENAI_ENDPOINT in the Variable Library
 
 **1.** In the Fabric workspace, open the **FabricAdminAgent_Variables** variable library.
 
@@ -18,7 +18,7 @@
 
 ---
 
-## Step 19: Configure and Schedule the Load Capacity Metrics Data Pipeline
+## Step 20: Configure and Schedule the Load Capacity Metrics Data Pipeline
 
 **1.** In the Fabric workspace, open the **FabricAdminAgent_LoadCapacityMetricsData** pipeline.
 
@@ -29,7 +29,7 @@
 
 ---
 
-## Step 20: Configure and Schedule the F-SKU Recommendation Notebook and Generate AI Insights Pipeline
+## Step 21: Configure and Schedule the F-SKU Recommendation Notebook and Generate AI Insights Pipeline
 
 **1.** In the Fabric workspace, open the **FabricAdminAgent_FSKURecommendation** notebook.
 

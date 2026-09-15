@@ -4,7 +4,7 @@
 
 ---
 
-## Step 21: Verify Setup
+## Step 22: Verify Setup
 
 After completing all steps in this guide, confirm the system is operating correctly:
 
@@ -25,4 +25,4 @@ One-time infrastructure setup is now complete. To start monitoring a Fabric capa
 
 ---
 
-*Previous in this guide:* [Prerequisites](./prerequisites.md) → [01 Tenant Settings](./01-tenant-settings.md) → [02 Deploy Workload](./02-deploy-workload.md) → [03 Deploy Azure](./03-deploy-azure.md) → [04 Permissions](./04-permissions.md) → [07 Azure Open AI Setup](./07-azure-openai-api-key.md) → [05 Email Notifications](./05-email-notifications.md) → [08 Pipeline Schedule](./08-pipeline-schedule.md) → **09 Verify Deployment**
+*Previous in this guide:* [Prerequisites](./prerequisites.md) → [01 Tenant Settings](./01-tenant-settings.md) → [02 Deploy Workload](./02-deploy-workload.md) → [03 Deploy Azure](./03-deploy-azure.md) → [04 Permissions](./04-permissions.md) → [05 Connections →](./05-connections.md) → [06 Azure Open AI Setup](./06-azure-openai-api-key.md) → [07 Email Notifications](./07-email-notifications.md) → [08 Pipeline Schedule](./08-pipeline-schedule.md) → **09 Verify Deployment**
