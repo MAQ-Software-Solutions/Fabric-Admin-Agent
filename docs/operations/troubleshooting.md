@@ -35,3 +35,23 @@
   * The managed identity must have at least the Contributor role on the relevant workspace.
   * The managed identity must have the Key Vault Secrets User role on the deployed Key vault.
   * The managed identity must be added to the security group that is configured to Allow service principals to use Fabric APIs.
+
+## Scenario 6: API failures (e.g., Internal Server Error or Kusto Throttling Errors)
+**Debugging Steps:**
+* Verify that the underlying Fabric capacity for the workload item is currently active and        running. 
+* Check if the capacity is being throttled due to high utilization, which can prevent the workload tabs from loading or cause operations to fail. 
+* If the capacity is throttled or unresponsive, attempt to scale up the capacity (increase the F-SKU) or restart the capacity to restore normal operations. 
+
+## Scenario 7: Timeout scenarios during operations or tab loading 
+**Debugging Steps:**
+* Similar to API failures, timeouts often indicate that the underlying compute resources are exhausted. Verify that the Fabric capacity is active and not in a throttled state. 
+* Check if the capacity is overloaded. If it is, attempt scaling up the capacity or restarting it to clear the bottleneck and allow operations to complete within the expected timeframes. 
+
+## Scenario 8: Workload deployment or operations fail due to missing permissions 
+**Debugging Steps:**
+* Verify Prerequisites: [Prerequisites](./../setup/prerequisites.md)
+* Verify Permissions: [Permissions](./../setup/04-permissions.md)
+
+## Scenario 9: Semantic model (FabricAdminAgent_CapacityMonitoringAgentDataset_(identifier)) refresh failures 
+**Debugging Steps:**
+* Verify connection configurations: [Connections](./../setup/05-connections.md)

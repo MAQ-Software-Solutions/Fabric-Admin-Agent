@@ -72,4 +72,4 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 ---
 
-**Next:** [Email & Notifications →](./05-email-notifications.md)
+**Next:** [Connections →](./05-connections.md)
