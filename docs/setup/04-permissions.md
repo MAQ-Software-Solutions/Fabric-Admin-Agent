@@ -18,7 +18,7 @@ The Function App and Automation Account each use a **System Assigned Managed Ide
 
 **4.** Perform the same steps for the deployed **Automation Account**.
 
-![Create](../assets/images/setup/function_app_identity.png)
+![Function App system-assigned managed identity Object ID](../assets/images/setup/function_app_identity.png)
 
 ---
 
@@ -30,7 +30,7 @@ The Function App and Automation Account each use a **System Assigned Managed Ide
 
 **3.** Add the Function App's managed identity and Automation Account's managed identity (using the Object IDs from Step 10) with the **Contributor** role.
 
-![Create](../assets/images/setup/function_app_fabric_access.png)
+![Granting Function App and Automation Account managed identities Contributor role on Fabric workspace](../assets/images/setup/function_app_fabric_access.png)
 
 ---
 
@@ -46,7 +46,7 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 **3.** Add the Function App's managed identity and the Automation Account's managed identity with the required roles.
 
-![Create](../assets/images/setup/function_app_capacity_access.png)
+![Granting managed identities capacity read and write roles in Fabric Admin Portal](../assets/images/setup/function_app_capacity_access.png)
 
 ---
 
@@ -58,15 +58,15 @@ For each capacity to be onboarded, grant the following Fabric permissions to the
 
 **3.** Assign the **Key Vault Secrets User** role to the Function App's managed identity and the Automation Account's managed identity.
 
-![Create](../assets/images/setup/function_app_vault_access.png)
+![Granting managed identities Key Vault Secrets User role](../assets/images/setup/function_app_vault_access.png)
 
 ---
 
-## Step 14: Add the Automation Account's Managed Identity to the "Allow service principals to use Fabric APIs" Security Group
+## Step 14: Add the Automation Account's Managed Identity to the "Service principals can call Fabric public APIs" Security Group
 
 **1.** Navigate to **Microsoft Fabric Admin Portal**
 
-**2.** Search for the **Allow service principals to use Fabric APIs** setting.
+**2.** Search for the **Service principals can call Fabric public APIs** setting.
 
 **3.** Open the associated Security Group and add the Automation Account's Managed Identity as a member.
 

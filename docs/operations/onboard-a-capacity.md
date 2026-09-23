@@ -8,6 +8,14 @@ When a new Fabric capacity needs to be monitored, perform the following per-capa
 3. Go to the **Capacity admins** tab.
 4. Add the user account that will onboard the capacity on the workload item.
 
+## Step 1b: Grant Capacity Read/Write to the Function App and Automation Account Managed Identities
+
+For each new capacity being onboarded, the Function App and Automation Account managed identities must have `Microsoft.Fabric/capacities/read` and `Microsoft.Fabric/capacities/write` permissions on that capacity to perform automated scaling, pause, and resume actions. This is a **per-capacity** step — it must be repeated for every additional capacity added after initial setup.
+
+See [Setup Step 12: Grant Capacity Roles to the Function App and Automation Account Identities](../setup/04-permissions.md#step-12-grant-capacity-roles-to-the-function-app-and-automation-account-identities) for detailed instructions.
+
+> **Note:** Scenarios 3 and 5 in [Troubleshooting](./troubleshooting.md) both trace back to missing capacity permissions on managed identities. Completing this step prevents the most common autoscaling and scheduling failures.
+
 ## Step 2: Add Capacity from the Workload
 1. Open the Fabric Admin Agent workload item.
 2. Navigate to the **Configuration** tab.

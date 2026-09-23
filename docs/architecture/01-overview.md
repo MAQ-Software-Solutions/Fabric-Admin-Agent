@@ -17,24 +17,26 @@ This page describes the six architectural layers and the two-tenant deployment m
 
 ## Two-Tenant Deployment Model
 
+**Your capacity telemetry and operational data stay entirely within your tenant.** MAQ Software hosts only the application layer — the React frontend and .NET Core backend — that renders the Fabric Admin Agent screens and reads your capacity data on your behalf. The only information held on MAQ's side is a per-customer pointer record (KQL cluster URI and database name) stored in Azure Table Storage, used solely to route backend API calls to the correct customer database. No capacity telemetry, findings, or operational metadata leave your tenant.
+
 The solution spans two Microsoft Entra tenants, shown in the end-to-end diagram below.
 
 ### ISV Tenant (MAQ Software)
 
 Hosts the multi-tenant SaaS components shared across all customers:
 
-- **ISV Entra ID** — issues the **Frontend App Registration** and **Backend App Registration** used by the SaaS app.
+- **ISV Entra ID** — issues the **Frontend App Registration** and **Backend App Registration**. These are multi-tenant Entra app registrations. When a customer completes Setup Steps 4 and 5, Entra projects these registrations into the customer tenant as **service principals** — one for the frontend UI and one for the backend API. The admin-consent steps grant those service principals the delegated and application permissions they need to operate within the customer tenant.
 - **React Frontend Application** — the web app hosted inside the Fabric workload's Extension iFrame.
 - **.NET Core Backend Application** — serves the frontend, performs OBO token exchanges against each customer's tenant, and queries each customer's KQL database.
-- **Azure Table (ISV Config Store)** — stores the per-customer-tenant KQL DB connection string, accessed by the backend via a dedicated Entra service principal (client-secret credential), and cached in-memory by the backend for 5 minutes.
+- **Azure Table (ISV Config Store)** — stores the per-customer-tenant KQL cluster URI and database name, accessed by the backend via a dedicated Entra service principal (client-secret credential), and cached in-memory by the backend for 5 minutes. No capacity telemetry is stored here.
 - **Application Insights** and **Log Analytics Workspace** — telemetry for the ISV-side frontend/backend.
-- **Azure Key Vault** - stores the secrets, azure table storage(ISV Config Store) connstion string.
+- **Azure Key Vault** — stores secrets including the Azure Table Storage (ISV Config Store) connection string.
 
 ### Customer Tenant
 
 Hosts the Fabric workload and Azure automation resources deployed per customer:
 
-- **Customer Entra ID** — issues the **Frontend Service Principal** (scopes: `Fabric.Extend`, `access_as_user`, `User.Read`) and **Backend Service Principal** (scopes: `user_impersonation`, plus PowerBI/KQLDB/Storage/Graph API permissions) used to authorize UI load, token requests, and the OBO flow.
+- **Customer Entra ID** — hosts the **Frontend Service Principal** (scopes: `Fabric.Extend`, `access_as_user`, `User.Read`) and **Backend Service Principal** (scopes: `user_impersonation`, plus PowerBI/KQLDB/Storage/Graph API permissions). These service principals are the customer-tenant representations of the ISV's app registrations, created automatically when admin consent is granted in Steps 4–5.
 - **Fabric front end / Extension iFrame** — hosts the ISV's web app inside the customer's Fabric workspace; the end user accesses the workload through here.
 - **Real-time pipeline** — Capacity Events → Eventstream → the AI Recommendation / Finding Detection Engine, which reads/writes the KQL DB storing final findings and capacity settings, and updates policies/materialized views used to process anomalies.
 - **Batch pipeline** — Capacity Metrics App → Data pipeline → Notebook → Staging Lakehouse → Semantic Model → Report.

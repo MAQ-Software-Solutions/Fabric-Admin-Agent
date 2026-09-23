@@ -1,6 +1,6 @@
 # 07 — Email Notifications (HVE Account & Key Vault Secrets)
 
-*Previous: [Azure Open AI Setup →](./06-azure-openai-api-key.md)*
+*Previous: [Azure Open AI Setup](./06-azure-openai-api-key.md)*
 
 The Fabric Admin Agent sends notification emails for findings and autoscale actions. Microsoft recommends using a dedicated **High Volume Email (HVE)** account for application-based email delivery.
 
@@ -109,7 +109,7 @@ Create the following secrets:
 
 **3.** Verify that all Key Vault reference settings display a **resolved** status (green checkmark).
 
-![Create](../assets/images/setup/function_app_secrets_resolved.png)
+![Function App Key Vault references successfully resolved](../assets/images/setup/function_app_secrets_resolved.png)
 
 ---
 

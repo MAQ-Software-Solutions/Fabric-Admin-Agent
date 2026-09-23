@@ -19,8 +19,8 @@ The following table summarizes all the roles and permissions required across Mic
 | **Contributor (or higher)** | Target Azure Resource Group | Required to deploy the Azure Function App, App Service Plan, Azure Storage Account, Log Analytics Workspace, Application Insights, Key Vault, Automation Account, and Runbooks. |
 | **Key Vault Administrator** (or equivalent permissions to create and manage secrets) | Azure Key Vault | Required to configure Key Vault, create secrets (HVE email credentials, Azure OpenAI API key), and manage access policies. |
 | **Owner or User Access Administrator** | Target Azure Resource Group / Key Vault | Required to assign Azure RBAC roles (such as `Key Vault Secrets User`) to the Function App and Automation Account System Assigned Managed Identities (Step 13). |
-| **Exchange Administrator or Global Administrator** *(Conditional)* | Microsoft 365 / Exchange Admin Center | Required to create the High Volume Email (HVE) account and assign billing policies if automated email notifications are enabled (Step 16). |
-| **Cognitive Services OpenAI Contributor / Reader** *(Conditional)* | Azure OpenAI Resource | Required to view and retrieve the Azure OpenAI Endpoint and API keys to store in Key Vault if AI Insights and recommendations are enabled (Step 15 & 18). |
+| **Exchange Administrator or Global Administrator** *(Conditional)* | Microsoft 365 / Exchange Admin Center | Required to create the High Volume Email (HVE) account and assign billing policies if automated email notifications are enabled (Step 17). |
+| **Cognitive Services OpenAI Contributor / Reader** *(Conditional)* | Azure OpenAI Resource | Required to view and retrieve the Azure OpenAI Endpoint and API keys to store in Key Vault if AI Insights and recommendations are enabled (Step 16 & 19). |
 
 ---
 
@@ -72,6 +72,8 @@ To configure and operate this functionality, the onboarding user or Service Prin
 |---|---|
 | Microsoft Fabric Capacity | **Contributor or higher** on the monitored capacity |
 | Workspace hosting the Eventstream, KQL Database, and notebooks | **Contributor or higher** |
+
+> **Note:** The "Contributor or higher" requirement above applies to the **human user** (or Service Principal) performing the onboarding steps — it is required to configure the Eventstream's Capacity Overview Events source. Separately, the **Function App and Automation Account managed identities** require `Microsoft.Fabric/capacities/read` and `Microsoft.Fabric/capacities/write` Azure RBAC roles on each monitored capacity to execute automated scaling, pause, and resume actions. These are different actors with different permission models — see [Step 12: Grant Capacity Roles to Managed Identities](./04-permissions.md#step-12-grant-capacity-roles-to-the-function-app-and-automation-account-identities) and [Onboard a Capacity: Step 1b](./operations/onboard-a-capacity.md#step-1b-grant-capacity-readwrite-to-the-function-app-and-automation-account-managed-identities) for the managed identity grants.
 
 Without these permissions:
 - The **Capacity Overview Events** source may not be available for configuration in the Eventstream.

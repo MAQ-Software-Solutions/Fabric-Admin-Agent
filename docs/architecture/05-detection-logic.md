@@ -38,14 +38,16 @@ Both real-time scenarios run as a chain of KQL **update policies** — each tabl
 
 ## Per-Capacity Configuration
 
-Configured per onboarded capacity under **Configuration → CapacityMonitoringAgent**, with a section for each scenario (Throttling Risk, Idle Capacity, Capacity Throttling, F-SKU Schedule Recommendation, AI Powered Capacity Allocation, AI Recommendation for Capacity):
+Configured per onboarded capacity under **Configuration → Capacity Monitoring Agent**, with a section for each scenario (Throttling Risk, Idle Capacity, Capacity Throttling, F-SKU Schedule Recommendation, AI Powered Capacity Allocation, AI Recommendation for Capacity):
 
-| Setting | Description |
-|---|---|
-| Sensitivity Level | Detection sensitivity level for anomaly findings |
-| Email | Comma-separated list of recipients for alert notifications |
-| Suppress Finding | Temporarily disables finding generation for the capacity |
-| Suppress Findings Until | Date/time until which finding generation stays suppressed |
+| Setting | Applies To | Description |
+|---|---|---|
+| Sensitivity Level | Throttling Risk | Detection sensitivity level for anomaly findings (`High` / `Medium` / `Low`; default `High`) |
+| Threshold (%) | Idle Capacity | Maximum CU utilization percentage below which a 30-second window is considered idle |
+| Duration (mins) | Idle Capacity | Rolling time window a capacity must stay below the threshold to trigger an idle finding (default 15 minutes) |
+| Email | All scenarios | Comma-separated list of recipients for alert notifications |
+| Suppress Finding | Alerts & Insights | Temporarily disables finding generation for the capacity |
+| Suppress Findings Until | Alerts & Insights | Date/time until which finding generation stays suppressed |
 
 Additional per-scenario configuration:
 

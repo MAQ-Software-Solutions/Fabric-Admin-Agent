@@ -14,7 +14,7 @@
 
 > **Required access:** The user configuring this pipeline and the notebook must have the **Key Vault Secrets User** role on the deployed Key Vault.
 
-![Create](../assets/images/setup/variable_library_openai_key.png)
+![FabricAdminAgent Variables library with AZURE_OPENAI_ENDPOINT value](../assets/images/setup/variable_library_openai_key.png)
 
 ---
 
@@ -24,8 +24,8 @@
 
 **2.** Set a **Daily** schedule (or as required by your refresh cadence).
 
-![Create](../assets/images/setup/pipeline_parameters.png)
-![Create](../assets/images/setup/pipeline_schedule.png)
+![Load Capacity Metrics Data pipeline parameters](../assets/images/setup/pipeline_parameters.png)
+![Load Capacity Metrics Data pipeline daily schedule configuration](../assets/images/setup/pipeline_schedule.png)
 
 ---
 
@@ -39,9 +39,9 @@
 
 **4.** Set a **Daily** schedule (or as required by your refresh cadence).
 
-![Create](../assets/images/setup/fsku_schedule_weekly_notebook_schedule.png)
+![F-SKU Recommendation notebook weekly schedule configuration](../assets/images/setup/fsku_schedule_weekly_notebook_schedule.png)
 
-![Create](../assets/images/setup/ai_insights_pipeline_daily_schedule.png)
+![Generate AI Insights pipeline daily schedule configuration](../assets/images/setup/ai_insights_pipeline_daily_schedule.png)
 
 ---
 

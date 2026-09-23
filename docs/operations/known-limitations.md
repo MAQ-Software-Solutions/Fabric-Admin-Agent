@@ -11,7 +11,7 @@
 ## SKU Scaling Boundaries
 * **Minimum Floor (F2):** F2 is the smallest available Fabric capacity SKU. When a capacity reaches F2, downscale recommendations and automated actions are dropped as no lower tier exists.
 * **Maximum Ceiling (F8192):** F8192 is the largest single Fabric capacity tier. When a capacity reaches F8192, upscale recommendations are dropped.
-* **Incremental Single-Step Scaling:** Autoscaling transitions one SKU tier at a time (e.g., F32 $\rightarrow$ F64). It does not perform multi-step jumps in a single cycle, ensuring controlled and predictable cost expansion.
+* **Incremental Single-Step Scaling:** Autoscaling transitions one SKU tier at a time (e.g., F32 → F64). It does not perform multi-step jumps in a single cycle, ensuring controlled and predictable cost expansion.
 
 ## Dependency on Capacity Metrics App Refresh
 * Historical AI batch insights (such as F-SKU schedule recommendations and workspace reallocation) depend on data from the official Microsoft Fabric Capacity Metrics App. If the metrics app semantic model refresh is delayed, batch insight pipelines will not reflect recent item-level telemetry, though real-time Eventstream monitoring continues unaffected.

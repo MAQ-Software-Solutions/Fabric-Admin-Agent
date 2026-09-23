@@ -16,7 +16,7 @@ Used by the Fabric Admin Agent to retrieve tenant metadata, including Fabric cap
 
 **2.** Locate the **PBI Service Web v2 connection** (`fabricadminagent-pbi-service-api-admin_<identifier>`).
 
-![Create](../assets/images/setup/admin_connection_oauth.png)
+![PBI Service Web v2 connection OAuth configuration](../assets/images/setup/admin_connection_oauth.png)
 
 **3.** Edit the connection credentials and select one of the supported authentication methods:
 
@@ -34,7 +34,7 @@ Used to access and refresh semantic models used by the workload.
 
 **5.** Locate the **PBI Semantic Model connection** (`fabricadminagent-pbi-semantic-refresh_<identifier>`).
 
-![Create](../assets/images/setup/semantic_model_connection.png)
+![PBI Semantic Model connection configuration](../assets/images/setup/semantic_model_connection.png)
 
 **6.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -46,7 +46,7 @@ Used by the semantic model to access and query the Eventhouse/KQL Database that 
 
 **8.** Locate the **Azure Data Explorer (Kusto) connection** (`fabricadminagent-kql-connection_<identifier>`).
 
-![Create](../assets/images/setup/kql_db_connection.png)
+![Azure Data Explorer KQL database connection configuration](../assets/images/setup/kql_db_connection.png)
 
 **9.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -58,7 +58,7 @@ Used by the semantic model to access the lakehouse SQL endpoint and execute quer
 
 **11.** Locate the **SQL Server connection** (`fabricadminagent-lakehouse-sql-endpoint_<identifier>`).
 
-![Create](../assets/images/setup/lakehouse_sql_endpoint.png)
+![Lakehouse SQL endpoint connection configuration](../assets/images/setup/lakehouse_sql_endpoint.png)
 
 **12.** Edit the connection credentials and configure the same authentication method used for the PBI Service Connection.
 
@@ -93,10 +93,10 @@ If using a Service Principal:
 **Fabric Tenant Settings** — enable the following, scoped to the Security Group containing the Service Principal:
 - Service principals can call Fabric public APIs
 
-  ![Create](../assets/images/setup/spn_fabric_rest.png)
+  ![Service principals can call Fabric public APIs tenant setting](../assets/images/setup/spn_fabric_rest.png)
 - Service principals can access read-only admin APIs
 
-  ![Create](../assets/images/setup/read-only-admin-apis.png)
+  ![Service principals can access read-only admin APIs tenant setting](../assets/images/setup/read-only-admin-apis.png)
 
 **Fabric Permissions** — grant the Service Principal:
 - Access to the required Fabric workspaces.

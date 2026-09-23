@@ -38,7 +38,7 @@
 
 ## Scenario 6: API failures (e.g., Internal Server Error or Kusto Throttling Errors)
 **Debugging Steps:**
-* Verify that the underlying Fabric capacity for the workload item is currently active and        running. 
+* Verify that the underlying Fabric capacity for the workload item is currently active and running.
 * Check if the capacity is being throttled due to high utilization, which can prevent the workload tabs from loading or cause operations to fail. 
 * If the capacity is throttled or unresponsive, attempt to scale up the capacity (increase the F-SKU) or restart the capacity to restore normal operations. 
 

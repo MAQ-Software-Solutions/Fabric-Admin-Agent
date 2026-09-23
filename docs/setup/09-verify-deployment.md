@@ -11,8 +11,8 @@ After completing all steps in this guide, confirm the system is operating correc
 - The **Review Active Findings** tab in the Fabric Admin Agent workload should start populating with alerts once capacity events are detected and the detection logic runs.
 - The **Monitoring Agent** tab will be populated after the Load Capacity Metrics Data pipeline refresh completes successfully.
 
-![Create](../assets/images/setup/capacity_monitoring_agent.png)
-![Create](../assets/images/setup/review_findings_tab.png)
+![Capacity Monitoring Agent workload item showing real-time utilization](../assets/images/setup/capacity_monitoring_agent.png)
+![Review Active Findings tab showing detected findings](../assets/images/setup/review_findings_tab.png)
 
 ---
 

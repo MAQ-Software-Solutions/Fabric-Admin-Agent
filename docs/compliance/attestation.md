@@ -6,7 +6,7 @@ This Vendor Self-Attestation document is designed for vendors to formally declar
 
 ## Key Terms Defined
 
-Vendor / Independent Software Vendor (ISV) / Partner: The company or individual responsible for developing, distributing, and maintaining the workload using Microsoft Fabric’s Workload Development Kit. Vendors may also provide value-added services, support, or integration solutions to extend the capabilities of Microsoft workloads and assist customers in their deployment and management. In this document, the vendor attests to their compliance with the requirements defined by Microsoft.
+Vendor / Independent Software Vendor (ISV) / Partner: The company or individual responsible for developing, distributing, and maintaining the workload using Microsoft Fabric's Workload Development Kit. Vendors may also provide value-added services, support, or integration solutions to extend the capabilities of Microsoft workloads and assist customers in their deployment and management. In this document, the vendor attests to their compliance with the requirements defined by Microsoft.
 
 Customer: The end user or organization that uses the workload developed by the vendor. Customers benefit from the functionalities provided by the workload, and their needs drive the requirements for reliability, performance, and supportability.
 
@@ -20,62 +20,23 @@ The document serves as an assurance from vendors to Microsoft and its Customers,
 
 The appendix allows vendors to provide detailed information about each requirement, specifying whether it's supported, and detailing any exceptions or additional information for clarity.
 
-## Process
-
-The document is composed of three sections. All sections are to be provided to Microsoft as Vendor’s formal attestation, while ONLY Section III, which details all of the specifics on the attestation are to be hosted on the partners website for customers to reference.
-
-Microsoft must be notified promptly prior to releasing any changes if the changes materially impact the attestation especially regarding security, compliance, privacy and/or if the change has significant variance from the design / UX guidelines.
-
-## Section I
-
-## ISV Information
-
-### Vendor Information
-
-| Name | Value |
-| --- | --- |
-| Company Name: | MAQ Software |
-| Company Website: | https://maqsoftware.com/ |
-| Address: | 2027 152nd Ave NE |
-| City: | Redmond |
-| State: | WA |
-| Postal Code: | 98052 |
-| Country: | United States |
-| Phone: | |
-
-### Primary Contact
-
-| Name | Value |
-| --- | --- |
-| Name: | Benjamin Ries-Roncalli |
-| Title: | Software Data Operations Engineer |
-| Email: | benjaminr@maqsoftware.com |
-
-## Section II
-
-## Attestation
-
-To: Microsoft Corporation
-
-Subject: Vendor Self-Attestation for Compliance with Microsoft Workload Development Requirements
-
-We, the undersigned, MAQ Software, hereby confirm and attest that we have reviewed, understood, and complied with all applicable requirements as outlined in the Microsoft Extensibility toolkit documentation, specifically the [Publish Workload Requirements](publishing-requirements-workload).
+---
 
 ## Section III
 
 ### Publish Workload Requirements Attestation Checklist
 
-We, the vendor, MAQ Software, confirm and attest to reviewing, meeting, and complying with the requirements outlined in the Microsoft Fabric Extensibility Toolkit specifically the [Publish Workload Requirements](publishing-requirements-workload)
+We, the vendor, MAQ Software, confirm and attest to reviewing, meeting, and complying with the requirements outlined in the Microsoft Fabric Extensibility Toolkit specifically the [Publish Workload Requirements](https://learn.microsoft.com/en-us/fabric/workload-development-kit/publish-workload-requirements).
 
-The following sections documents details, exceptions, or variances regarding the attestation of adherence to the Publish Workload Requirements.
+The following sections document details, exceptions, or variances regarding the attestation of adherence to the Publish Workload Requirements.
 
 ### Workload Information
 
 | Name | Value |
 | --- | --- |
-| Workload Version | 1.1.1 |
+| Workload Version | 2.0.0 |
 | Workload Name | Fabric Admin Agent |
-| Release Date | 03/24/2025 |
+| Release Date | 09/01/2026 |
 | {{workloadName}} | {{MAQSoftware.FabricAdminAgent}} |
 | Product | MAQSoftware.FabricAdminAgent.Product |
 
@@ -91,6 +52,7 @@ The Fabric Admin Agent helps Fabric administrators monitor, understand, and opti
 - Trend analysis and forecasting based on historical usage
 - Data-driven SKU sizing recommendations for cost-efficient scaling
 - Automated capacity optimization actions (scaling, uptime scheduling)
+- AI-powered insights including F-SKU schedule recommendations, workspace reallocation recommendations, and capacity sizing recommendations via Azure OpenAI
 - Improved budget forecasting and cost predictability
 
 ##### Trial
@@ -119,13 +81,13 @@ The workload is not currently available on the marketplace.
 
 The workloads use Microsoft Entra authentication and authorization.
 
-[ ] No other authentication and authorization mechanisms are used
+[X] No other authentication and authorization mechanisms are used
 
 [ ] Different authentication and authorization mechanisms are used for stored data In Fabric
 
 Note
 
-Provide details here: Provide the endpoint / tenant ID for the Microsoft Entra If other Non Microsoft Entra Authentication and Authorization Mechanisms are required, outline details.
+The Fabric Admin Agent uses Microsoft Entra for all authentication flows. The Frontend App Registration and Backend App Registration are hosted in the ISV (MAQ Software) Entra tenant. During setup, customers grant admin consent for the Frontend Service Principal and Backend Service Principal, which are the service principal representations of those app registrations projected into the customer tenant. All token exchanges (OBO flows) are performed against the customer's Entra tenant. No other authentication or authorization mechanisms are used.
 
 #### OneLake
 
@@ -137,7 +99,7 @@ Workloads integrate with OneLake to store data in the standard formats supported
 
 Note
 
-Clarify what data or metadata is stored outside of OneLake and/or Fabric
+All capacity telemetry, findings, settings, and audit logs are stored in the customer's Fabric Eventhouse (KQL Database) and Lakehouse within their tenant. The only data stored outside the customer tenant is a per-customer pointer record (KQL cluster URI and database name) held in Azure Table Storage in MAQ Software's Azure subscription, used solely to route backend API calls to the correct customer database. No capacity telemetry or operational data is stored on MAQ's side.
 
 #### Microsoft Entra Conditional Access
 
@@ -153,29 +115,37 @@ Enterprise customers require centralized control and management of the identitie
 
 Admin REST APIs are an integral part of Fabric admin and governance process. These APIs help Fabric admins in discovering workspaces and items, and enforcing governance such as performing access reviews, etc. Basic functionality is supported as part of the Workload Development Kit and doesn't need any work from Partners.
 
-[ ] Microsoft Fabric Admin APIs are being used (/admin/\*)
+[X] Microsoft Fabric Admin APIs are being used (/admin/\*)
 
 [ ] No Microsoft Fabric Admin APIs are being used
+
+Note
+
+The Fabric Admin Agent uses the Power BI Admin REST APIs (`/admin/*`) to retrieve tenant capacity and workspace metadata. Only read operations are performed; the **Service principals can access admin APIs used for updates** tenant setting is not required.
 
 #### Customer Facing Monitoring & Diagnostic
 
 Health and telemetry data needs to be stored for a minimum for 30 days including activity ID for customer support purposes, including Trials.
 
-[ ] Minimum 30 days requirement is adhered to
+[X] Minimum 30 days requirement is adhered to
 
-[ ] Vendor stores the data for \_\_ days beyond the minimum requirement
-
-#### B2B
-
-The implementation of the workload is in line with Microsoft Fabric’s sharing strategy focused on allowing customers to collaborate with their business partners, customers, vendors, subsidiaries, etc. It also means users from other tenants can potentially be granted access to items partners are creating.
-
-[ ] Cross tenant B2B collaboration supported
-
-[ ] Workload Item Access only within the tenant
+[X] Vendor stores the data for 335 days beyond the minimum requirement
 
 Note
 
-Clarify limitations, constraints, exceptions if applicable
+`FabricFindingsAlerts` and associated KQL tables use a 365-day soft-delete retention policy, exceeding the 30-day minimum requirement by 335 days.
+
+#### B2B
+
+The implementation of the workload is in line with Microsoft Fabric's sharing strategy focused on allowing customers to collaborate with their business partners, customers, vendors, subsidiaries, etc. It also means users from other tenants can potentially be granted access to items partners are creating.
+
+[ ] Cross tenant B2B collaboration supported
+
+[X] Workload Item Access only within the tenant
+
+Note
+
+The Fabric Admin Agent workload item is scoped to within the customer tenant. Cross-tenant B2B collaboration for the workload item itself is not supported. Monitoring data and findings are accessible only to users with appropriate permissions within the customer's Fabric workspace.
 
 #### Business Continuity and disaster recovery
 
@@ -192,7 +162,7 @@ The Workload implementation takes measures to test and track performance of thei
 
 [X] Performance tracking isn't currently available to the end user however vendor support personnel can monitor, test, track performance via their internal instrumentation and monitoring systems
 
-We rely entirely on the native performance monitoring tools and capabilities provided by Microsoft Fabric and Azure. No additional performance monitoring or tracking mechanisms are implemented beyond what Fabric/Azure natively supports, ensuring a consistent and reliable experience aligned with Microsoft’s infrastructure.
+We rely entirely on the native performance monitoring tools and capabilities provided by Microsoft Fabric and Azure. No additional performance monitoring or tracking mechanisms are implemented beyond what Fabric/Azure natively supports, ensuring a consistent and reliable experience aligned with Microsoft's infrastructure.
 
 #### Presence
 
@@ -364,9 +334,7 @@ Partner workloads are an integral part of Fabric that requires that the Microsof
 
 | Name | Value |
 | --- | --- |
-| Contact Name/Team: | Benjamin Ries-Roncalli |
-| Number | |
-| Email alias | benjaminr@maqsoftware.com |
+| Contact Name/Team: | MAQ Software Support |
 | Self Service portal | www.maqsoftware.com |
 
 #### Supportability

@@ -8,7 +8,7 @@
 
 **1.** Click the **Deploy Azure Resources** button.
 
-![Create](../assets/images/setup/azure_deployment_button.png)
+![Deploy Azure Resources button](../assets/images/setup/azure_deployment_button.png)
 
 **2.** Provide the following inputs when prompted:
 
@@ -19,15 +19,15 @@
 
 > **Note:** The user must have **Contributor** role on the target Azure Resource Group.
 
-![Create](../assets/images/setup/tenant_id_dialog_box.png)
+![Azure deployment subscription and resource group input dialog](../assets/images/setup/tenant_id_dialog_box.png)
 
 **3.** Confirm the deployment. This step deploys a Key Vault, an Automation account, and two runbooks.
 
-![Create](../assets/images/setup/azure_deployment_confirmation.png)
+![Azure deployment confirmation dialog](../assets/images/setup/azure_deployment_confirmation.png)
 
 ---
 
-## Step 8: Note the Deployed (Fabric) Resources
+## Step 8: Record the Deployed Fabric Artifact Details
 
 Before deploying the Function App, gather the Fabric artifact details produced in [Step 6: Deploy Fabric Resources](./02-deploy-workload.md#step-6-deploy-fabric-resources) — the KQL Database URI and name are required as inputs in Step 9 below.
 
@@ -44,7 +44,7 @@ Before deploying the Function App, gather the Fabric artifact details produced i
 - **KQL Database** — `FabricAdminAgentLogs` database that stores capacity events and utilization data
 - **SQL Connection** — SQL Server connection
 
-![Create](../assets/images/setup/deployed_artifacts.png)
+![Deployed Fabric artifacts list in the Configuration tab](../assets/images/setup/deployed_artifacts.png)
 
 **4.** The KQL Database URI is not shown in the **Deployed Artifacts** list. Open the deployed `FabricAdminAgentLogs` Eventhouse, select its KQL Database, open the database details, and copy the **Query URI**. Record this URI and the KQL Database name for Step 9.
 
@@ -58,22 +58,23 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 **2.** Click **Build your own template in the editor**, paste in the ARM template JSON from [`deploy/ARM-FunctionApp-FAA.json`](../../deploy/ARM-FunctionApp-FAA.json), and click **Save**.
 
-![Create](../assets/images/setup/custom_deployment.png)
+![Azure Portal custom template deployment editor](../assets/images/setup/custom_deployment.png)
 
 **3.** Provide the following required input parameters:
 
-| Parameter | Description |
-|---|---|
-| Function App Name | Name for the new Azure Function App |
-| Key Vault Name | Name of the Key Vault deployed in Step 7 |
-| KQL DB URI | Query URI of the KQL Database (from Step 8) |
-| KQL DB Name | Name of the KQL Database (from Step 8) |
+| Parameter (Display) | ARM Parameter Name | Description |
+|---|---|---|
+| Function App Name | `appName` | Base name used to derive all resource names (Function App, Storage Account, App Service Plan, Log Analytics Workspace, Application Insights) |
+| Key Vault Name | `keyVaultName` | Name of the Key Vault deployed in Step 7 |
+| KQL DB URI | `kustoClusterUri` | Query URI of the KQL Database (from Step 8) |
+| KQL DB Name | `kustoDatabaseName` | Name of the KQL Database (from Step 8) |
+| Location | `location` | Deployment location for all resources; defaults to the resource group |
 
-![Create](../assets/images/setup/input_parameters_function_app.png)
+![ARM template input parameters for Function App deployment](../assets/images/setup/input_parameters_function_app.png)
 
 **4.** Submit the deployment. This takes approximately **2–3 minutes**.
 
-![Create](../assets/images/setup/azure_deployment_complete.png)
+![Azure Function App deployment complete](../assets/images/setup/azure_deployment_complete.png)
 
 **5.** Verify that all Azure resources have been successfully deployed. The following resources should be visible in the Azure Resource Group:
 - Azure Key Vault
@@ -83,7 +84,7 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 - Log Analytics Workspace
 - Application Insights
 
-![Create](../assets/images/setup/azure_resources.png)
+![Deployed Azure resources in the resource group](../assets/images/setup/azure_resources.png)
 
 ---
 

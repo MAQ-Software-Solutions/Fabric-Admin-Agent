@@ -16,11 +16,11 @@
 
 **3.** Enter a name for the artifact and confirm creation.
 
-![Create](../assets/images/setup/createitemdialoguebox.png)
+![Create item dialog box](../assets/images/setup/createitemdialoguebox.png)
 
 The item is created in its initial state.
 
-![Create](../assets/images/setup/initialstate.png)
+![Fabric Admin Agent initial state after workload creation](../assets/images/setup/initialstate.png)
 
 ---
 
@@ -30,7 +30,7 @@ Upon creation, a popup appears requesting permissions for the **Frontend Service
 
 **1.** Review the requested permissions in the popup.
 
-![Create](../assets/images/setup/frontendadminapproval.png)
+![Frontend admin consent approval dialog](../assets/images/setup/frontendadminapproval.png)
 
 **2.** Click **Request Approval** to submit the consent request.
 
@@ -44,11 +44,11 @@ The Backend app registration requires admin consent and **must be performed by**
 
 **1.** The admin navigates to the Backend app authorization screen within the workload setup.
 
-![Create](../assets/images/setup/backendappconsent.png)
+![Backend app consent dialog](../assets/images/setup/backendappconsent.png)
 
 **2.** The admin reviews and grants the requested API permissions.
 
-![Create](../assets/images/setup/initialstatebackendsignin.png)
+![Initial state after backend sign-in](../assets/images/setup/initialstatebackendsignin.png)
 
 > **Important:** Both the Frontend SPN approval (Step 4) and Backend app authorization (Step 5) must be completed before proceeding to Step 6.
 
@@ -60,15 +60,15 @@ Once both SPN approvals are complete:
 
 **1.** Click the **Deploy Fabric Resources** button in the workload item.
 
-![Create](../assets/images/setup/fabric_deploy.png)
+![Fabric deployment button](../assets/images/setup/fabric_deploy.png)
 
 **2.** Wait for the deployment to complete. This process takes approximately **20–25 minutes**.
 
-![Create](../assets/images/setup/fabric_deployment_progress.png)
+![Fabric deployment in progress](../assets/images/setup/fabric_deployment_progress.png)
 
 **3.** Confirm all Fabric artifacts have been successfully deployed. See [Fabric Artifacts reference](../architecture/03-fabric-artifacts.md) for the full list of items this deploys (Lakehouse, notebooks, pipelines, semantic model, report, KQL database, connections, etc.).
 
-![Create](../assets/images/setup/fabric_deployment_complete.png)
+![Fabric deployment complete](../assets/images/setup/fabric_deployment_complete.png)
 
 ---
 

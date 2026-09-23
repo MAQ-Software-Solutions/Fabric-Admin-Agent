@@ -1,8 +1,8 @@
+# Autoscaling & Scheduling
+
 > **Prerequisites**
 >
 > Before configuring Real Time Monitoring, Auto-Scale, or F-SKU Schedules, ensure you have access to the Azure Resource Group that contains the deployed Automation Account used by the workload item. If the required permissions are managed through Azure Privileged Identity Management (PIM), activate the appropriate role before creating, modifying, or deleting monitoring and scheduling configurations.
-
-# Autoscaling & Scheduling
 
 Configure automated operational boundaries, real-time monitoring windows, and scheduled scaling actions for your capacities.
 

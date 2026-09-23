@@ -19,7 +19,7 @@ The Fabric Admin Agent relies on an Eventhouse KQL Database (typically named `Fa
 | `UpsizeFindings_Deduped` | Deduplicates real-time upsize findings to one row per SessionId. | `DeduplicateUpsizeFindings()` |
 | `IdleLoadFindings_RT` | Real-time table storing raw idle load detection evaluations. | `IdleLoadDetect()` |
 | `IdleLoadFindings_Deduped` | Deduplicates idle load sessions, ensuring the capacity is still under the threshold. | `DeduplicateIdleLoad()` |
-| `FabricFindingsAlerts` | Final persisted findings (Alerts and Insights) surfaced to the user. Features a 30-day soft-delete retention policy. | `ProcessNewApproachingThrottling()`, `ProcessNewIdleLoad()` |
+| `FabricFindingsAlerts` | Final persisted findings (Alerts and Insights) surfaced to the user. Features a 365-day soft-delete retention policy so expired/superseded findings remain recoverable for one year. | `ProcessNewApproachingThrottling()`, `ProcessNewIdleLoad()` |
 
 ## Materialized Views and Reference Tables
 

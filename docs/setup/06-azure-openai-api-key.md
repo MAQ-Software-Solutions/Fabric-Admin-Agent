@@ -13,5 +13,7 @@
 > **Important:** The user configuring the pipeline and notebook schedules must have the **Key Vault Secrets User** role on the deployed Key Vault. See [Permissions → Step 13](./04-permissions.md#step-13-grant-key-vault-secrets-user-role-to-the-function-app-and-automation-account).
 
 ![Key Vault Secrets](../assets/images/setup/key_vault_openai.png)
+
 ---
+
 **Next:** [Email & Notifications →](./07-email-notifications.md)
