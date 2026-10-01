@@ -93,13 +93,13 @@ MAQ Software hosts only the application that renders the agent's screens inside 
 
 | Area | What it shows you |
 |---|---|
-| **Home** | A scorecard for every onboarded capacity — its SKU, current state, and open findings — at a glance |
+| **Overview** | A scorecard for every onboarded capacity — its SKU, current state, and open findings — at a glance |
 | **Review Active Findings** | Your working queue: every alert and insight, each with its recommended action |
 | **Capacity Monitoring Agent** | An embedded report with live utilization and historical trends from the Capacity Metrics App |
 | **Configuration** | Where you onboard capacities, set thresholds, enable automation, and manage who gets notified |
 
-![Home — capacity scorecard](../assets/images/overview/home-scorecard.png)
-*Home: every onboarded capacity at a glance.*
+![Overview — capacity scorecard](../assets/images/overview/overview-scorecard.png)
+*Overview: every onboarded capacity at a glance.*
 
 ![Review Active Findings](../assets/images/overview/review-active-findings.png)
 *Review Active Findings: alerts and insights with recommended actions.*
