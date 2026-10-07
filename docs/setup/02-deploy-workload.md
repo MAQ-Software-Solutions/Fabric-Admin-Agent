@@ -18,9 +18,9 @@
 
 ![Create item dialog box](../assets/images/setup/createitemdialoguebox.png)
 
-The item is created in its initial state.
+The item is created and shows the **Backend App Authorization Required** card until the Backend app is authorized in [Step 5](#step-5-authorize-the-backend-application).
 
-![Fabric Admin Agent initial state after workload creation](../assets/images/setup/initialstate.png)
+![Backend App Authorization Required card with Check Again and Authorize Backend App buttons](../assets/images/setup/initialstate.png)
 
 ---
 
@@ -42,13 +42,16 @@ Upon creation, a popup appears requesting permissions for the **Frontend Service
 
 The Backend app registration requires admin consent and **must be performed by** a **Global Administrator**, **Privileged Role Administrator**, **Application Administrator**, or **Cloud Application Administrator**.
 
-**1.** The admin navigates to the Backend app authorization screen within the workload setup.
+**1.** On the **Backend App Authorization Required** card in the workload item (see [Step 3](#step-3-create-the-fabric-admin-agent-workload-item)), click **Authorize Backend App**. A Microsoft sign-in window opens.
 
-![Backend app consent dialog](../assets/images/setup/backendappconsent.png)
+**2.** Complete the consent prompt:
 
-**2.** The admin reviews and grants the requested API permissions.
+- **If you hold one of the admin roles above**, review the requested permissions and accept them. Consent is granted immediately.
+- **If you don't**, Microsoft shows a **Need admin approval** page for the Backend app. Select **Have an admin account? Sign in with that account** to sign in as an admin, or select **Return to the application without granting consent** and ask an admin to complete this step.
 
-![Initial state after backend sign-in](../assets/images/setup/initialstatebackendsignin.png)
+![Need admin approval page for the Backend app, shown to a user without an admin role](../assets/images/setup/backendappconsent.png)
+
+**3.** After consent is granted, click **Check Again** on the card. The card is replaced by the **Environment Setup Required** card, which shows the deployment buttons used in Step 6.
 
 > **Important:** Both the Frontend SPN approval (Step 4) and Backend app authorization (Step 5) must be completed before proceeding to Step 6.
 
@@ -62,9 +65,9 @@ Once both SPN approvals are complete:
 
 ![Fabric deployment button](../assets/images/setup/fabric_deploy.png)
 
-**2.** Wait for the deployment to complete. This process takes approximately **20–25 minutes**.
+**2.** Wait for the deployment to complete. The status changes to **In Progress**, and the **Fabric Resources** row tracks how many items have been deployed. This process takes approximately **20–25 minutes**.
 
-![Fabric deployment in progress](../assets/images/setup/fabric_deployment_progress.png)
+![Fabric deployment in progress, with the Deploying Fabric button disabled and the status set to In Progress](../assets/images/setup/fabric_deployment_progress.png)
 
 **3.** Confirm all Fabric artifacts have been successfully deployed. See [Fabric Artifacts reference](../architecture/03-fabric-artifacts.md) for the full list of items this deploys (Lakehouse, notebooks, pipelines, semantic model, report, KQL database, connections, etc.).
 

@@ -6,11 +6,11 @@
 
 ## Step 7: Deploy Azure Resources (Key Vault, Automation Account, Runbooks)
 
-**1.** Click the **Deploy Azure Resources** button.
+**1.** Once **Fabric Resources** shows 100%, click the **Deploy Azure Resources** button.
 
-![Deploy Azure Resources button](../assets/images/setup/azure_deployment_button.png)
+![Deploy Azure Resources button, with Fabric Resources at 100% and Azure Resources at 0 of 4](../assets/images/setup/azure_deployment_button.png)
 
-**2.** Provide the following inputs when prompted:
+**2.** In the **Deploy Azure Resources** dialog, provide the following inputs. These values are saved to the KQL `ConfigTable` and used when creating the Key Vault.
 
 | Parameter | Description |
 |---|---|
@@ -19,9 +19,9 @@
 
 > **Note:** The user must have **Contributor** role on the target Azure Resource Group.
 
-![Azure deployment subscription and resource group input dialog](../assets/images/setup/tenant_id_dialog_box.png)
+![Deploy Azure Resources dialog with Azure Subscription ID and Resource Group Name fields](../assets/images/setup/tenant_id_dialog_box.png)
 
-**3.** Confirm the deployment. This step deploys a Key Vault, an Automation account, and two runbooks.
+**3.** Click **Deploy**. This step deploys a Key Vault, an Automation account, and two runbooks, and the **Azure Resources** row tracks these four resources.
 
 ![Azure deployment confirmation dialog](../assets/images/setup/azure_deployment_confirmation.png)
 
@@ -78,6 +78,7 @@ A custom ARM template deployment provisions the Azure Function App used for capa
 
 **5.** Verify that all Azure resources have been successfully deployed. The following resources should be visible in the Azure Resource Group:
 - Azure Key Vault
+- Azure Automation Account and two runbooks (from Step 7)
 - Azure Function App
 - App Service Plan
 - Azure Storage Account
