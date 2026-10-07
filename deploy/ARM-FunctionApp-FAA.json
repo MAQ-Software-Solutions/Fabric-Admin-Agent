@@ -44,7 +44,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -58,7 +58,7 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/default/app-package', variables('storageAccountName'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
@@ -66,7 +66,7 @@
     },
     {
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2025-07-01",
       "name": "[variables('workspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -92,7 +92,7 @@
     },
     {
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2025-05-01",
       "name": "[variables('hostingPlanName')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -105,7 +105,7 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2025-05-01",
       "name": "[variables('functionAppName')]",
       "location": "[parameters('location')]",
       "kind": "functionapp,linux",
@@ -122,11 +122,11 @@
             },
             {
               "name": "AzureWebJobsStorage",
-              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-01-01').keys[0].value)]"
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2025-06-01').keys[0].value)]"
             },
             {
               "name": "DEPLOYMENT_STORAGE_CONNECTION_STRING",
-              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-01-01').keys[0].value)]"
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2025-06-01').keys[0].value)]"
             },
             {
               "name": "FindingExpirationMinutes",
@@ -183,7 +183,7 @@
     },
     {
       "type": "Microsoft.Web/sites/extensions",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/onedeploy', variables('functionAppName'))]",
       "location": "[parameters('location')]",
       "properties": {

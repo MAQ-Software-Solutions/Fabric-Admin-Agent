@@ -14,6 +14,9 @@ The user(s) performing the initial workload setup must have:
 | Microsoft Fabric (Capacity) | **Capacity Administrator** | Read Capacity Overview Events via Eventstream and add capacities in the Configuration tab |
 | Azure Resource Group | **Contributor** | Deploy Azure infrastructure (Function App, Vault, etc.) |
 | Azure Key Vault | **Key Vault Administrator** | Store HVE credentials during deployment |
+| Azure Resource Group | **Owner or User Access Administrator**  | Assign Azure RBAC roles (such as `Key Vault Secrets User`) to the Function App and Automation Account System Assigned Managed Identities. |
+| Microsoft 365 / Exchange Admin Center | **Exchange Administrator or Global Administrator** *(Conditional)* | Create the High Volume Email (HVE) account and assign billing policies if automated email notifications are enabled. |
+| Azure OpenAI Resource | **Cognitive Services OpenAI Contributor / Reader** *(Conditional)* | View and retrieve the Azure OpenAI Endpoint and API keys to store in Key Vault if AI Insights and recommendations are enabled. |
 
 ## Azure Function App Managed Identity
 

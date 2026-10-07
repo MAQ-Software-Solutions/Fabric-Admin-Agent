@@ -11,7 +11,7 @@
   * `fabricadminagent-pbi-semantic-refresh_<suffix>`
   * `fabricadminagent-pbi-service-api-admin_<suffix>`
 
-## Scenario 2: Capacity Scorecard shows a "Paused" state on the Home page and no real-time findings are generated when Agent Actions are disabled
+## Scenario 2: Capacity Scorecard shows a "Paused" state on the Overview page and no real-time findings are generated when Agent Actions are disabled
 **Debugging Steps:**
 * Verify the associated Eventstream and ensure that its destination is active.
 * Check whether the capacity utilization is within an appropriate range and whether there is sufficient workload activity to trigger a scale-up or scale-down recommendation.
