@@ -407,5 +407,5 @@ No additional notes.
 
 ## References
 
-- Terms of Service: https://maqsoftware.com/termsofservice
-- Privacy Statement: https://maqsoftware.com/privacystatement
+- Terms of Service: https://maqsoftware.com/terms-of-service/
+- Privacy Statement: https://maqsoftware.com/privacy-statement/
