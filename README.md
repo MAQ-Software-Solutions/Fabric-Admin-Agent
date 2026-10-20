@@ -2,7 +2,7 @@
 
 **Prevent Microsoft Fabric throttling before your users feel it — and stop paying for capacity you don't use.**
 
-[![Version](https://img.shields.io/badge/version-v2.0.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
 [![Microsoft Marketplace](https://img.shields.io/badge/Microsoft%20Marketplace-Admin%20Agent-0078D4)](https://marketplace.microsoft.com/en-us/product/maqsoftware.fabricadminagent)
 [![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
 
