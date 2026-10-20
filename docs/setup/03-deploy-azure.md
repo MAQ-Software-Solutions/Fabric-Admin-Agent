@@ -1,0 +1,92 @@
+# 03 — Deploy Azure Resources
+
+*Previous: [Deploy the Workload](./02-deploy-workload.md)*
+
+---
+
+## Step 7: Deploy Azure Resources (Key Vault, Automation Account, Runbooks)
+
+**1.** Once **Fabric Resources** shows 100%, click the **Deploy Azure Resources** button.
+
+![Deploy Azure Resources button, with Fabric Resources at 100% and Azure Resources at 0 of 4](../assets/images/setup/azure_deployment_button.png)
+
+**2.** In the **Deploy Azure Resources** dialog, provide the following inputs. These values are saved to the KQL `ConfigTable` and used when creating the Key Vault.
+
+| Parameter | Description |
+|---|---|
+| Azure Subscription ID | The subscription where Azure resources will be deployed |
+| Resource Group Name | The resource group where Azure resources will be deployed |
+
+> **Note:** The user must have **Contributor** role on the target Azure Resource Group.
+
+![Deploy Azure Resources dialog with Azure Subscription ID and Resource Group Name fields](../assets/images/setup/tenant_id_dialog_box.png)
+
+**3.** Click **Deploy**. This step deploys a Key Vault, an Automation account, and two runbooks, and the **Azure Resources** row tracks these four resources.
+
+![Azure deployment confirmation dialog](../assets/images/setup/azure_deployment_confirmation.png)
+
+---
+
+## Step 8: Record the Deployed Fabric Artifact Details
+
+Before deploying the Function App, gather the Fabric artifact details produced in [Step 6: Deploy Fabric Resources](./02-deploy-workload.md#step-6-deploy-fabric-resources) — the KQL Database URI and name are required as inputs in Step 9 below.
+
+**1.** In the Fabric Admin Agent workload item, navigate to the **Configuration** tab.
+
+**2.** Expand the **Deployed Artifacts** section in the left pane.
+
+**3.** Note down the names and GUIDs of the following deployed artifacts:
+- **Eventhouse** — KQL Eventhouse for real-time capacity events
+- **Semantic Model** — for capacity monitoring reports
+- **PBI Connection** — Web v2 Power BI service connection
+- **PowerBIDataset Connection** — Power BI Semantic Model connection
+- **KQL Connection** — Azure Data Explorer (Kusto) connection
+- **KQL Database** — `FabricAdminAgentLogs` database that stores capacity events and utilization data
+- **SQL Connection** — SQL Server connection
+
+![Deployed Fabric artifacts list in the Configuration tab](../assets/images/setup/deployed_artifacts.png)
+
+**4.** The KQL Database URI is not shown in the **Deployed Artifacts** list. Open the deployed `FabricAdminAgentLogs` Eventhouse, select its KQL Database, open the database details, and copy the **Query URI**. Record this URI and the KQL Database name for Step 9.
+
+---
+
+## Step 9: Deploy the Function App via ARM Template
+
+A custom ARM template deployment provisions the Azure Function App used for capacity operations. This must be done manually in the Azure Portal using the ARM template provided by the Fabric Admin Agent team.
+
+**1.** In the Azure Portal, navigate to **Deploy a custom template** (search for "Deploy a custom template" in the search bar, or go to [portal.azure.com/#create/Microsoft.Template](https://portal.azure.com/#create/Microsoft.Template)).
+
+**2.** Click **Build your own template in the editor**, paste in the ARM template JSON from [`deploy/ARM-FunctionApp-FAA.json`](../../deploy/ARM-FunctionApp-FAA.json), and click **Save**.
+
+![Azure Portal custom template deployment editor](../assets/images/setup/custom_deployment.png)
+
+**3.** Provide the following required input parameters:
+
+| Parameter (Display) | ARM Parameter Name | Description |
+|---|---|---|
+| Function App Name | `appName` | Base name used to derive all resource names (Function App, Storage Account, App Service Plan, Log Analytics Workspace, Application Insights) |
+| Key Vault Name | `keyVaultName` | Name of the Key Vault deployed in Step 7 |
+| KQL DB URI | `kustoClusterUri` | Query URI of the KQL Database (from Step 8) |
+| KQL DB Name | `kustoDatabaseName` | Name of the KQL Database (from Step 8) |
+| Location | `location` | Deployment location for all resources; defaults to the resource group |
+
+![ARM template input parameters for Function App deployment](../assets/images/setup/input_parameters_function_app.png)
+
+**4.** Submit the deployment. This takes approximately **2–3 minutes**.
+
+![Azure Function App deployment complete](../assets/images/setup/azure_deployment_complete.png)
+
+**5.** Verify that all Azure resources have been successfully deployed. The following resources should be visible in the Azure Resource Group:
+- Azure Key Vault
+- Azure Automation Account and two runbooks (from Step 7)
+- Azure Function App
+- App Service Plan
+- Azure Storage Account
+- Log Analytics Workspace
+- Application Insights
+
+![Deployed Azure resources in the resource group](../assets/images/setup/azure_resources.png)
+
+---
+
+**Next:** [Permissions →](./04-permissions.md)
