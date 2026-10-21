@@ -4,7 +4,7 @@
 
 [![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
 [![Microsoft Marketplace](https://img.shields.io/badge/Microsoft%20Marketplace-Admin%20Agent-0078D4)](https://marketplace.microsoft.com/en-us/product/saas/maqsoftware.fabric_admin_agent_saas)
-[![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
+[![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE.md)
 
 The Fabric Admin Agent watches every Microsoft Fabric capacity in your tenant around the clock. It spots throttling risk and wasted capacity as they emerge, tells you exactly what to do about them, and — when you choose — does it for you, within limits you set. It installs as a workload item in your own Fabric workspace, and your capacity data never leaves your tenant.
 

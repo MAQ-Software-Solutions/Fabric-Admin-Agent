@@ -61,8 +61,8 @@ The Fabric Admin Agent spans two tenants: MAQ Software's and yours. See the [Arc
 
 | Version | Supported |
 |---|---|
-| 2.x | Yes |
-| 1.x and earlier | No |
+| 1.1.x | Yes |
+| 1.0.x and earlier | No |
 
 MAQ Software updates the hosted application directly, so you don't need to do anything to receive those fixes. If a fix requires changes to resources in your own tenant, such as the Function App, runbooks, or Fabric artifacts, we'll tell affected customers what to do.
 

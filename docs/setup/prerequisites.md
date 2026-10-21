@@ -1,5 +1,9 @@
 # Prerequisites
 
+*Previous: [Marketplace Offer](./00-offer-purchase.md)*
+
+---
+
 > **Important:** All prerequisites below must be met before starting the setup steps. Missing any item will cause failures during Eventstream creation or notebook execution.
 
 Before starting, also ensure the **Microsoft Fabric Capacity Metrics App** is installed and its semantic model is refreshing. Note down the **Workspace Name** and **Semantic Model Name** — these are required later when configuring capacity monitoring.

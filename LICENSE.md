@@ -26,7 +26,7 @@ Billed by MAQ Software through Microsoft Marketplace
   metered plan. There is no recurring license fee. You pay only for the
   capacity hours you use.
 
-    Plan:               Fabric Admin Agent Plan
+    Plan:               Introductory Plan
     Billing dimension:  Capacity Hour
     Unit of measure:    One hour during which one Fabric capacity is
                         onboarded to the agent
