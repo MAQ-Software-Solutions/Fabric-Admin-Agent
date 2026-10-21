@@ -9,7 +9,7 @@ Software. Your use of it is governed by:
     https://maqsoftware.com/terms-of-service/
 
   - The terms of the Fabric Admin Agent offer on Microsoft Marketplace
-    https://marketplace.microsoft.com/en-us/product/maqsoftware.fabricadminagent
+    https://marketplace.microsoft.com/en-us/product/saas/maqsoftware.fabric_admin_agent_saas
 
   - MAQ Software Privacy Statement
     https://maqsoftware.com/privacy-statement/

@@ -8,7 +8,7 @@
 No. It's built and supported by MAQ Software using Microsoft's Fabric Workload Development Kit and is available through the Microsoft Marketplace. Because it's a partner workload, your Fabric administrator enables a tenant setting allowing "additional workloads" before it can be installed — see [Tenant settings](../setup/01-tenant-settings.md).
 
 **What does it cost?**
-The Fabric Admin Agent is a paid offer billed per capacity through Microsoft Marketplace metered billing. Current pricing is on the [Marketplace listing](https://marketplace.microsoft.com/en-us/product/maqsoftware.fabricadminagent), or email CustomerSuccess@MAQSoftware.com.
+The Fabric Admin Agent is a paid offer billed per capacity through Microsoft Marketplace metered billing. Current pricing is on the [Marketplace listing](https://marketplace.microsoft.com/en-us/product/saas/maqsoftware.fabric_admin_agent_saas), or email CustomerSuccess@MAQSoftware.com.
 
 **Can I try it first?**
 There's no self-service trial today. Contact CustomerSuccess@MAQSoftware.com to arrange a demo or an evaluation in your environment.

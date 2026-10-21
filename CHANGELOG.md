@@ -2,9 +2,9 @@
 
 All notable changes to the Fabric Admin Agent are documented here.
 
-## [2.0.0]
+## [1.1.0]
 
-Version 2 moves detection from scheduled batch jobs to real time. Findings now appear within seconds to a few minutes of a condition starting, instead of after the next scheduled notebook run.
+Version 1.1.0 moves detection from scheduled batch jobs to real time. Findings now appear within seconds to a few minutes of a condition starting, instead of after the next scheduled notebook run.
 
 ### Added
 
@@ -17,7 +17,7 @@ Version 2 moves detection from scheduled batch jobs to real time. Findings now a
 
 ### Changed
 
-- **Detection engine.** The scheduled PySpark detection notebooks from version 1 (Sustained Load, Spike Detection, CU Trending Upwards, and Short-Term CU Prediction) are replaced by real-time KQL detection.
+- **Detection engine.** The scheduled PySpark detection notebooks from version 1.0.0 (Sustained Load, Spike Detection, CU Trending Upwards, and Short-Term CU Prediction) are replaced by real-time KQL detection.
 - **Onboarding.** An Eventstream is created automatically when you onboard a capacity. Manual Eventstream setup is no longer needed.
 - **Storage.** Findings, settings, schedules, and audit logs move from the `FabricAdminAgentDB` SQL database to the `FabricAdminAgentLogs` KQL database.
 - **Automation identity.** The Function App and Automation Account use system-assigned managed identities. Key Vault no longer stores a service principal client ID and secret. It holds only the email credentials and the optional Azure OpenAI key.

@@ -3,7 +3,7 @@
 **Prevent Microsoft Fabric throttling before your users feel it — and stop paying for capacity you don't use.**
 
 [![Version](https://img.shields.io/badge/version-v1.1.0-blue)](CHANGELOG.md)
-[![Microsoft Marketplace](https://img.shields.io/badge/Microsoft%20Marketplace-Admin%20Agent-0078D4)](https://marketplace.microsoft.com/en-us/product/maqsoftware.fabricadminagent)
+[![Microsoft Marketplace](https://img.shields.io/badge/Microsoft%20Marketplace-Admin%20Agent-0078D4)](https://marketplace.microsoft.com/en-us/product/saas/maqsoftware.fabric_admin_agent_saas)
 [![License](https://img.shields.io/badge/license-TBD-lightgrey)](LICENSE)
 
 The Fabric Admin Agent watches every Microsoft Fabric capacity in your tenant around the clock. It spots throttling risk and wasted capacity as they emerge, tells you exactly what to do about them, and — when you choose — does it for you, within limits you set. It installs as a workload item in your own Fabric workspace, and your capacity data never leaves your tenant.
@@ -83,7 +83,7 @@ Browse every page from the [documentation index](docs/index.md).
 
 ## Get the Fabric Admin Agent
 
-The Fabric Admin Agent is available through the [Microsoft Marketplace](https://marketplace.microsoft.com/en-us/product/maqsoftware.fabricadminagent) as a paid offer, billed per capacity through Marketplace metered billing. Pricing details are published on the Marketplace listing.
+The Fabric Admin Agent is available through the [Microsoft Marketplace](https://marketplace.microsoft.com/en-us/product/saas/maqsoftware.fabric_admin_agent_saas) as a paid offer, billed per capacity through Marketplace metered billing. Pricing details are published on the Marketplace listing.
 
 To see it in action or discuss your environment, contact **CustomerSuccess@MAQSoftware.com**.
 
@@ -93,7 +93,7 @@ To see it in action or discuss your environment, contact **CustomerSuccess@MAQSo
 
 - **Support** — [SUPPORT.md](SUPPORT.md) · CustomerSuccess@MAQSoftware.com
 - **Security** — [SECURITY.md](SECURITY.md)
-- **License** — [LICENSE](LICENSE)
+- **License** — [LICENSE](LICENSE.md)
 - **Release notes** — [CHANGELOG.md](CHANGELOG.md)
 
 © MAQ Software. Microsoft, Microsoft Fabric, and Azure are trademarks of the Microsoft group of companies.
