@@ -1,6 +1,8 @@
-# 06 — Azure Open AI Setup
+# 06 — Azure Open AI Setup for Fabric Admin Agent
 
 *Previous: [Connections](./05-connections.md)*
+
+(If you don't have an existing Azure OpenAI resource and a deployed model, please refer to [Azure Open AI Setup](./setup-azure-openai.md) before proceeding).
 
 ## Step 16: Get and Store the Azure OpenAI API Key
 
